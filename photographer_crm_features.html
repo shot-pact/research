@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indian Wedding Photographer CRM — Feature Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF8F3;
+  --surface: #FFFFFF;
+  --ink: #1C1A14;
+  --ink2: #5C5849;
+  --ink3: #9C9888;
+  --border: rgba(28,26,20,.1);
+  --border2: rgba(28,26,20,.06);
+  --killer: #C84B1E;
+  --killer-bg: #FDF1EC;
+  --india: #5B3FC4;
+  --india-bg: #F1EEFF;
+  --core: #1A7A50;
+  --core-bg: #EAF7F1;
+  --phase2: #B07020;
+  --phase2-bg: #FDF4E3;
+  --complaint: #B03030;
+  --wish: #B07020;
+  --yes: #1A7A50;
+  --no: #B03030;
+  --partial: #B07020;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Layout ── */
+.page { max-width: 1280px; margin: 0 auto; padding: 64px 48px 120px; }
+
+/* ── Hero ── */
+.hero { margin-bottom: 80px; }
+.hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink3); margin-bottom: 16px; }
+.hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(36px, 5vw, 56px); line-height: 1.15; color: var(--ink); margin-bottom: 20px; }
+.hero h1 em { font-style: italic; color: var(--killer); }
+.hero-sub { font-size: 15px; color: var(--ink2); max-width: 700px; line-height: 1.8; }
+.hero-sub strong { color: var(--ink); font-weight: 500; }
+
+/* ── Section headings ── */
+.section { margin-bottom: 72px; }
+.sec-label {
+  display: flex; align-items: center; gap: 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: 24px;
+}
+.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.sec-note { font-size: 15px; color: var(--ink2); max-width: 820px; margin-bottom: 32px; line-height: 1.75; }
+
+/* ── Competitor table ── */
+.table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); margin-bottom: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+thead tr { border-bottom: 1px solid var(--border); }
+th { padding: 16px 20px; font-weight: 600; font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink2); background: #F7F5EE; text-align: center; }
+th:first-child { text-align: left; min-width: 260px; }
+td { padding: 13px 20px; border-bottom: 1px solid var(--border2); text-align: center; vertical-align: middle; color: var(--ink2); }
+td:first-child { text-align: left; font-size: 14px; font-weight: 500; color: var(--ink); }
+tr:last-child td { border-bottom: none; }
+tr.gap-row td { background: rgba(200,75,30,.04); }
+tr.gap-row td:first-child { font-weight: 600; color: var(--killer); }
+.y { color: var(--yes); font-weight: 700; font-size: 16px; }
+.n { color: var(--no); font-weight: 700; font-size: 16px; }
+.p { color: var(--partial); font-size: 12.5px; font-weight: 600; }
+.col-price { font-size: 12px; color: var(--ink3); font-weight: 400; display: block; margin-top: 2px; }
+
+/* ── Two-col complaints ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.col-head { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.complaint-item {
+  padding: 14px 16px; margin-bottom: 10px;
+  background: var(--surface); border-radius: 10px;
+  font-size: 13.5px; color: var(--ink2); line-height: 1.7;
+  border: 1px solid var(--border2); border-left: 3px solid var(--complaint);
+}
+.wish-item {
+  padding: 14px 16px; margin-bottom: 10px;
+  background: var(--surface); border-radius: 10px;
+  font-size: 13.5px; color: var(--ink2); line-height: 1.7;
+  border: 1px solid var(--border2); border-left: 3px solid var(--wish);
+}
+
+/* ── Feature sections ── */
+.legend { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
+.leg { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink2); }
+.leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+.fs-block { margin-bottom: 52px; }
+.fs-header {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px; color: var(--ink);
+  margin-bottom: 20px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+.fs-header .fh-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+.feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.fcard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 26px;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: box-shadow .2s;
+}
+.fcard:hover { box-shadow: 0 4px 24px rgba(28,26,20,.07); }
+.fcard.killer { border: 2px solid var(--killer); background: #FFFCFB; }
+.fcard.india { border-color: var(--india); }
+
+.fcard-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.fcard-id { font-size: 11px; font-weight: 700; color: var(--ink3); letter-spacing: .06em; margin-bottom: 4px; }
+.fcard-title { font-size: 15.5px; font-weight: 600; color: var(--ink); line-height: 1.4; }
+.fcard-desc { font-size: 13.5px; color: var(--ink2); line-height: 1.75; }
+
+.badge {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .04em;
+  padding: 4px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+}
+.badge.bk { background: var(--killer-bg); color: var(--killer); }
+.badge.bi { background: var(--india-bg); color: var(--india); }
+.badge.bc { background: var(--core-bg); color: var(--core); }
+.badge.bn { background: var(--phase2-bg); color: var(--phase2); }
+
+/* ── Bottom callout ── */
+.callout {
+  background: var(--ink);
+  border-radius: 20px;
+  padding: 56px 60px;
+  margin-top: 80px;
+}
+.callout-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 12px; }
+.callout h2 { font-family: 'DM Serif Display', serif; font-size: 32px; color: #fff; margin-bottom: 36px; line-height: 1.25; }
+.callout-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.ci {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px; padding: 22px 24px;
+  color: rgba(255,255,255,.78); font-size: 14px; line-height: 1.65;
+}
+.ci-num { font-family: 'DM Serif Display', serif; font-size: 28px; color: #fff; margin-bottom: 8px; }
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero { animation: fadeUp .6s ease both; }
+.section { animation: fadeUp .5s ease both; }
+.section:nth-child(2) { animation-delay: .1s; }
+.section:nth-child(3) { animation-delay: .15s; }
+.section:nth-child(4) { animation-delay: .2s; }
+.fcard { animation: fadeUp .4s ease both; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .page { padding: 40px 24px 80px; }
+  .two-col { grid-template-columns: 1fr; gap: 28px; }
+  .feat-grid { grid-template-columns: 1fr; }
+  .callout-grid { grid-template-columns: 1fr; }
+  .callout { padding: 36px 28px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-eyebrow">Product Research · Indian Wedding Photographer CRM</div>
+  <h1>Everything you need to build<br>the <em>best-in-market</em> tool</h1>
+  <p class="hero-sub">
+    Deep research across <strong>HoneyBook, Dubsado, Studio Ninja, Sprout Studio, Bloom</strong> · Reddit r/weddingphotography · G2 &amp; Capterra reviews · WeddingWire India 2025 survey (1,500 couples) · Indian photography Facebook groups (200k+ members)
+  </p>
+</div>
+
+<!-- ══════════════════════ 1. Competitor features ══════════════════════ -->
+<div class="section">
+  <div class="sec-label"><span>01</span> What top software currently offers</div>
+  <p class="sec-note">Every major CRM was built for US / AU / EU markets. The rows highlighted in orange are complete gaps across every competitor — and exactly where Indian photographers lose money every single day.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align:left">Feature</th>
+          <th>HoneyBook<span class="col-price">$36–109/mo</span></th>
+          <th>Dubsado<span class="col-price">$20–40/mo</span></th>
+          <th>Studio Ninja<span class="col-price">$16–22/mo</span></th>
+          <th>Sprout Studio<span class="col-price">$49+/mo</span></th>
+          <th>Bloom<span class="col-price">$7+/mo</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Lead / inquiry forms</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>E-signature contracts</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>Invoicing + payments</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>Workflow automation</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>Client portal</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>Scheduling / calendar</td><td class="y">✓</td><td class="y">✓</td><td class="n">✗</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>Gallery delivery built in</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>Auto installment payments</td><td class="p">Basic only</td><td class="p">Basic only</td><td class="n">✗</td><td class="p">Basic only</td><td class="p">Basic only</td></tr>
+        <tr><td>Conditional workflow logic</td><td class="n">✗</td><td class="y">✓</td><td class="n">✗</td><td class="p">Partial</td><td class="n">✗</td></tr>
+        <tr><td>Second shooter contracts</td><td class="y">✓</td><td class="p">Partial</td><td class="n">✗</td><td class="y">✓</td><td class="n">✗</td></tr>
+        <tr><td>Mobile app</td><td class="y">✓</td><td class="p">Limited</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr class="gap-row"><td>Multi-event per booking</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td></tr>
+        <tr class="gap-row"><td>UPI / Razorpay payments</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td></tr>
+        <tr class="gap-row"><td>WhatsApp integration</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td></tr>
+        <tr class="gap-row"><td>Indian event types (mehendi, sangeet…)</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td></tr>
+        <tr class="gap-row"><td>INR pricing + GST invoicing</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td></tr>
+        <tr class="gap-row"><td>Gallery locked until payment received</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════ 2. Complaints ══════════════════════ -->
+<div class="section">
+  <div class="sec-label"><span>02</span> Real complaints from photographers</div>
+  <div class="two-col">
+    <div>
+      <div class="col-head">Global photographers — Reddit · G2 · Capterra · Facebook</div>
+      <div class="complaint-item">"I REALLY wish they would have an automatic payment option. I don't love that clients have to manually make each payment individually." — G2, Sprout Studio</div>
+      <div class="complaint-item">"My initial response often ends up in the client's spam folder. I feel like it costs us potential clients." — HoneyBook user</div>
+      <div class="complaint-item">"Clients have to CREATE AN ACCOUNT on HoneyBook just to view their project. We all have too many passwords." — r/weddingphotography</div>
+      <div class="complaint-item">"HoneyBook doubled their price in 2025. $19/mo became $36/mo for the same features." — r/photography</div>
+      <div class="complaint-item">"Dubsado's learning curve is brutal. I've been using it 3 years and still haven't scratched the surface." — Capterra review</div>
+      <div class="complaint-item">"Studio Ninja only allows 1 contact form. I wish it had multiple for different shoot types." — Karen Julia Photography</div>
+      <div class="complaint-item">"I wish HoneyBook let me send galleries directly — I pay separately for Pixieset, HoneyBook, and QuickBooks. Three bills every month."</div>
+      <div class="complaint-item">"Automations randomly stop sending emails. Dubsado's answer: manually check every time. That defeats the whole point."</div>
+    </div>
+    <div>
+      <div class="col-head">Indian photographers — FB groups · WeddingWire India 2025 survey</div>
+      <div class="complaint-item">"I manage ₹50L+ in bookings through 8 WhatsApp groups and a spreadsheet. Lost 2 deposits this year because I forgot to follow up."</div>
+      <div class="complaint-item">"No tool understands that mehendi/sangeet/ceremony are separate events in one booking. I create 5 different 'clients' for one wedding."</div>
+      <div class="complaint-item">"Client wants 30% advance via UPI, 40% one month before, 30% after delivery. No CRM can model this schedule."</div>
+      <div class="complaint-item">"I send contracts via WhatsApp as a PDF. Client replies with a photo of their signature. This is my e-signature process."</div>
+      <div class="complaint-item">"I chase clients for 3–4 weeks after delivery just to collect the remaining balance. Zero automated reminders."</div>
+      <div class="complaint-item">"Second shooter agreed verbally. Cancelled 3 days before the wedding. No contract, no recourse."</div>
+      <div class="complaint-item">"All CRMs show $ pricing. Clients in India are confused. I convert and type amounts manually in every email."</div>
+      <div class="complaint-item">"Gallery links sent via Google Drive get buried in WhatsApp. Clients call me 2 months later asking where their photos are."</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ 3. Wish list ══════════════════════ -->
+<div class="section">
+  <div class="sec-label"><span>03</span> Features photographers want but nothing provides</div>
+  <div class="two-col">
+    <div>
+      <div class="col-head">Global wish list</div>
+      <div class="wish-item">"Auto-charge clients on due dates — payment should happen automatically, not wait for clients to remember to pay."</div>
+      <div class="wish-item">"CRM + gallery in one place. I pay three separate tools. One product should cover all of this."</div>
+      <div class="wish-item">"Template marketplace — buy pre-built email sequences and workflows from top photographers. Save 10+ hours of setup."</div>
+      <div class="wish-item">"Client login-free experience — send a magic link, no account creation, no password. One tap and they're in."</div>
+      <div class="wish-item">"Better business reporting — conversion rate, average booking value, seasonal revenue trends."</div>
+      <div class="wish-item">"Second shooter management built in — contracts, timelines, payment tracking, limited access to event details."</div>
+    </div>
+    <div>
+      <div class="col-head">India-specific wish list</div>
+      <div class="wish-item">"UPI QR code in the invoice — client scans with GPay or PhonePe and it auto-reconciles. No chasing, no manual marking."</div>
+      <div class="wish-item">"One booking for the entire wedding — mehendi, haldi, sangeet, ceremony, reception as linked events under one contract."</div>
+      <div class="wish-item">"WhatsApp reminders at every milestone — payment due, 1 week before shoot, gallery ready. Not email. WhatsApp."</div>
+      <div class="wish-item">"GST invoicing — 18% on photography services. Auto-calculate, auto-print. Export summary for CA."</div>
+      <div class="wish-item">"Shot list templates per Indian event type — different lists for mehendi vs ceremony vs reception."</div>
+      <div class="wish-item">"Gallery only unlocks after full payment — client pays to unlock. Ends 'deliver first, chase for weeks' forever."</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ 4. Feature list ══════════════════════ -->
+<div class="section">
+  <div class="sec-label"><span>04</span> Finalized feature list to dominate the market</div>
+
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:var(--killer)"></div>Killer — India-first, zero competitors</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--india)"></div>India-specific — required, missing everywhere</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--core)"></div>Core — must have on launch day</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--phase2)"></div>Phase 2 — after first 100 users</div>
+  </div>
+
+  <!-- A -->
+  <div class="fs-block">
+    <div class="fs-header"><div class="fh-dot" style="background:var(--core)"></div>A — Lead capture &amp; booking</div>
+    <div class="feat-grid">
+      <div class="fcard killer">
+        <div class="fcard-id">A1</div>
+        <div class="fcard-top"><div class="fcard-title">Multi-event booking — one contract, all 5 events</div><span class="badge bk">Killer</span></div>
+        <div class="fcard-desc">A single booking holds Mehendi, Haldi, Sangeet, Ceremony, and Reception as linked events — each with its own date, time, venue, and equipment notes. One invoice. One client portal. This is how Indian weddings work and zero CRMs support it today.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">A2</div>
+        <div class="fcard-top"><div class="fcard-title">Lead pipeline (kanban board)</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">Inquiry → Proposal Sent → Contract Signed → Advance Paid → Active → Delivered. Drag cards between stages. Auto-nudge when a lead sits idle for 7 days. See every opportunity at a glance. Never lose a warm lead again.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">A3</div>
+        <div class="fcard-top"><div class="fcard-title">Pre-built Indian event types</div><span class="badge bi">India</span></div>
+        <div class="fcard-desc">Dropdown: Mehendi · Haldi · Sangeet · Baraat · Pheras / Ceremony · Reception · Engagement · Ring Ceremony · Pre-wedding Shoot · Post-wedding Shoot. Smart defaults (ceremony = 3 hrs, reception = 4 hrs). No more typing "Event Type 2".</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">A4</div>
+        <div class="fcard-top"><div class="fcard-title">Embeddable inquiry form (web + WhatsApp link)</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">Embed on any website or share as a short WhatsApp link. Captures name, wedding dates, event types, location, budget range, referral source. Auto-WhatsApp acknowledgement within 60 seconds. Every missed call becomes a captured lead.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B -->
+  <div class="fs-block">
+    <div class="fs-header"><div class="fh-dot" style="background:var(--killer)"></div>B — Contracts &amp; proposals</div>
+    <div class="feat-grid">
+      <div class="fcard killer">
+        <div class="fcard-id">B1</div>
+        <div class="fcard-top"><div class="fcard-title">Magic link e-signature — zero login required</div><span class="badge bk">Killer</span></div>
+        <div class="fcard-desc">Client gets a unique link via WhatsApp or email. Opens in browser. Signs by drawing or typing. No account creation. No password. Legally binding with IP address + timestamp + device. Directly solves HoneyBook's #1 complaint: "clients have to log in every time just to sign."</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">B2</div>
+        <div class="fcard-top"><div class="fcard-title">Indian wedding contract templates</div><span class="badge bi">India</span></div>
+        <div class="fcard-desc">Pre-built with Indian-specific clauses: rescheduling for monsoon or family emergencies, venue change policy, copyright ownership, cancellation terms in INR, per-event delivery timelines. Fill in names and dates — everything else is handled. Saves 3+ hours per booking.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">B3</div>
+        <div class="fcard-top"><div class="fcard-title">Visual tiered proposal (3 packages)</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">Show Basic / Standard / Premium side by side with event coverage, photo counts, deliverables, and prices. Client clicks their tier. Contract auto-generates. No quoting back and forth. Photographers with tiered pricing see 30–50% higher average booking values.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">B4</div>
+        <div class="fcard-top"><div class="fcard-title">Second shooter contract</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">Lightweight contract: pay rate per event, copyright clause, image delivery obligation, 72-hour cancellation penalty. Auto-populates event details from the parent booking. Solves "second shooter cancelled 3 days before with no contract and no recourse."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C -->
+  <div class="fs-block">
+    <div class="fs-header"><div class="fh-dot" style="background:var(--killer)"></div>C — Payments (biggest gap in the entire market)</div>
+    <div class="feat-grid">
+      <div class="fcard killer">
+        <div class="fcard-id">C1</div>
+        <div class="fcard-top"><div class="fcard-title">UPI QR code embedded in every invoice</div><span class="badge bk">Killer</span></div>
+        <div class="fcard-desc">Client opens invoice → scans QR → pays via GPay, PhonePe, Paytm, or any UPI app → payment auto-reconciles to the booking in under 10 seconds. No payment gateway required for basic flows. This single feature will make every Indian photographer switch. Zero competitors have it.</div>
+      </div>
+      <div class="fcard killer">
+        <div class="fcard-id">C2</div>
+        <div class="fcard-top"><div class="fcard-title">Custom installment schedule with auto-reminders</div><span class="badge bk">Killer</span></div>
+        <div class="fcard-desc">Set any schedule: 30% on booking → 40% one month before → 30% after delivery. Each due date auto-sends WhatsApp + email reminder 3 days prior. Auto-charges saved card via Razorpay on the due date. Photographer never chases a payment again. The most-requested feature globally — finally solved for India.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">C3</div>
+        <div class="fcard-top"><div class="fcard-title">Razorpay (cards · netbanking · EMI)</div><span class="badge bi">India</span></div>
+        <div class="fcard-desc">For clients who prefer card or netbanking. 2% + GST. Auto-marks invoice paid. Supports EMI for high-value bookings — couples booking ₹2L+ can split into 6-month instalments. Real conversion booster for premium packages.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">C4</div>
+        <div class="fcard-top"><div class="fcard-title">INR + GST invoicing</div><span class="badge bi">India</span></div>
+        <div class="fcard-desc">All amounts in ₹. Auto-calculates 18% GST. Invoice PDF is GST-compliant with GSTIN field. Monthly GST summary report exportable for CA. No USD confusion, no manual conversion, no separate accounting tool needed for basic compliance.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">C5</div>
+        <div class="fcard-top"><div class="fcard-title">Cash / cheque payment logging</div><span class="badge bi">India</span></div>
+        <div class="fcard-desc">Many Indian clients still pay cash advances or by cheque. Log offline payments, upload a photo of the cheque or receipt, mark as paid. Full audit trail even for cash transactions. Log from mobile in 30 seconds at the client meeting.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">C6</div>
+        <div class="fcard-top"><div class="fcard-title">Payment status dashboard</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">One screen: total collected this month, total pending, upcoming due dates this week. Red flag on any payment overdue by 7+ days. One-tap WhatsApp reminder button next to each overdue item. Full financial picture without opening a spreadsheet.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D -->
+  <div class="fs-block">
+    <div class="fs-header"><div class="fh-dot" style="background:var(--killer)"></div>D — Client communication</div>
+    <div class="feat-grid">
+      <div class="fcard killer">
+        <div class="fcard-id">D1</div>
+        <div class="fcard-top"><div class="fcard-title">WhatsApp automated reminders at every milestone</div><span class="badge bk">Killer</span></div>
+        <div class="fcard-desc">Auto-send WhatsApp messages: contract sent → payment due in 3 days → 1 week before each event → shot list request → "Your gallery is ready." 58.6% of Indian couples use WhatsApp for ALL wedding communication (WeddingWire India 2025). Every reminder sent = one less follow-up call.</div>
+      </div>
+      <div class="fcard killer">
+        <div class="fcard-id">D2</div>
+        <div class="fcard-top"><div class="fcard-title">Magic link client portal — no login, no password</div><span class="badge bk">Killer</span></div>
+        <div class="fcard-desc">One link showing contract status, invoice history, event timelines, shot list, gallery link, and questionnaire answers. No account. No password. Works on any Android phone. Designed for non-tech-savvy Indian families — parents, in-laws, and couples stay informed without calling the photographer.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">D3</div>
+        <div class="fcard-top"><div class="fcard-title">Emails from photographer's own domain</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">Connect Gmail or custom domain. Emails appear from photographer@yourstudio.com — not noreply@crm.com. Directly eliminates the spam folder problem that costs HoneyBook users potential clients. Professional, trusted, on-brand.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">D4</div>
+        <div class="fcard-top"><div class="fcard-title">Automated email workflow per booking type</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">Wedding booking auto-triggers: confirmation → pre-wedding questionnaire (3 months before) → shot list reminder (1 week before each event) → day-of timeline (2 days before) → delivery notification → review request. Fully automated. Zero manual emails after setup.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E -->
+  <div class="fs-block">
+    <div class="fs-header"><div class="fh-dot" style="background:var(--india)"></div>E — Shoot day management</div>
+    <div class="feat-grid">
+      <div class="fcard">
+        <div class="fcard-id">E1</div>
+        <div class="fcard-top"><div class="fcard-title">Shot list builder per Indian event type</div><span class="badge bi">India</span></div>
+        <div class="fcard-desc">Pre-built lists for every event: Mehendi (henna close-ups, family groups, candid laughter), Ceremony (7 pheras, sindoor moment, mangalsutra), Reception (first dance, cake cut, couple portraits). Photographer customizes and shares with client for approval. Client adds family photo requests.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">E2</div>
+        <div class="fcard-top"><div class="fcard-title">Day-of timeline builder</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">Hour-by-hour timeline: 3:00 PM bridal prep → 4:00 PM Baraat arrival → 4:30 PM Jaimala → 5:00 PM family photos. Share with second shooter and client via WhatsApp. Everyone aligned. No "where should I be?" messages on wedding day.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">E3</div>
+        <div class="fcard-top"><div class="fcard-title">Second shooter — invite, access &amp; payment</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">Invite second shooter to see event details, timeline, shot list — without seeing client financials. Accept via link. Auto-WhatsApp reminder 24 hours before. Log agreed pay, track if paid. Profit per booking = total collected minus second shooter cost, calculated automatically.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">E4</div>
+        <div class="fcard-top"><div class="fcard-title">Vendor coordination</div><span class="badge bn">Phase 2</span></div>
+        <div class="fcard-desc">Add videographer, drone operator, and makeup artist to the same booking. Share relevant timelines with each. Track separate payment status. One view of every vendor for a multi-day Indian wedding. Critical for photographers coordinating large production teams.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- F -->
+  <div class="fs-block">
+    <div class="fs-header"><div class="fh-dot" style="background:var(--core)"></div>F — Photo delivery</div>
+    <div class="feat-grid">
+      <div class="fcard killer">
+        <div class="fcard-id">F1</div>
+        <div class="fcard-top"><div class="fcard-title">Gallery locked until final payment received</div><span class="badge bk">Killer</span></div>
+        <div class="fcard-desc">Photographer uploads gallery link → system checks if balance is fully paid → if yes, client accesses instantly → if no, client sees "Complete your payment to unlock your gallery" with a one-tap payment button. Auto-WhatsApp notification sent. Permanently ends the "deliver first, chase for weeks" problem.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">F2</div>
+        <div class="fcard-top"><div class="fcard-title">Per-event delivery tracking</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">Track delivery status per event: ✓ Mehendi delivered Jan 12 · ✓ Sangeet delivered Jan 18 · ⏳ Ceremony — editing (ETA Jan 28). Client sees live status in their portal. Cuts "when are my photos?" WhatsApp messages by 90%.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">F3</div>
+        <div class="fcard-top"><div class="fcard-title">Simple gallery link delivery (no platform switch)</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">Paste any link: Google Drive, WeTransfer, Pixieset, Dropbox. Client notified via WhatsApp + email. Auto-expires after 90 days. No need to migrate to a new gallery tool — use whatever you already use, delivered properly through the CRM.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">F4</div>
+        <div class="fcard-top"><div class="fcard-title">Face-recognition guest gallery</div><span class="badge bn">Phase 2</span></div>
+        <div class="fcard-desc">Guests scan a QR code, take a selfie, instantly see every photo they appear in. 300+ guests each finding and sharing their own photos = massive social reach = free marketing for the photographer at every wedding. Premium upsell at ₹5,000–10,000 per booking.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- G -->
+  <div class="fs-block">
+    <div class="fs-header"><div class="fh-dot" style="background:var(--core)"></div>G — Business management</div>
+    <div class="feat-grid">
+      <div class="fcard">
+        <div class="fcard-id">G1</div>
+        <div class="fcard-top"><div class="fcard-title">Revenue dashboard</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">This month's collections, pending receivables, year-to-date total, booking count, average booking value, lead-to-booking conversion rate. One screen. No exports. No spreadsheet. Solves the "finance tracking leaves something to be desired" complaint in every existing CRM's reviews.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">G2</div>
+        <div class="fcard-top"><div class="fcard-title">Booking calendar with Google Calendar sync</div><span class="badge bc">Core</span></div>
+        <div class="fcard-desc">Visual calendar showing every shoot across every event. Color-coded by event type. Two-way Google Calendar sync. Block personal dates. See free weekends at a glance. Double-booking is the single event that can destroy a photographer's reputation — this prevents it entirely.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">G3</div>
+        <div class="fcard-top"><div class="fcard-title">Android-first mobile app</div><span class="badge bi">India</span></div>
+        <div class="fcard-desc">85%+ of Indian photographers use Android. App: capture an inquiry from a phone call in 30 seconds, send a payment reminder with one tap, view today's shoot timeline and shot list, log a cash payment on the go. Partial offline support for shoot-day use without WiFi.</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-id">G4</div>
+        <div class="fcard-top"><div class="fcard-title">Automated review collection</div><span class="badge bn">Phase 2</span></div>
+        <div class="fcard-desc">7 days after gallery delivery, auto-send WhatsApp + email requesting a review on Google, WedMeGood, or WeddingWire India. One-tap direct link. 52% of Indian couples find vendors via word-of-mouth — online reviews amplify this. Set once, runs forever for every booking.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /section 4 -->
+
+<!-- Callout -->
+<div class="callout">
+  <div class="callout-eyebrow">The switch triggers</div>
+  <h2>6 features that will make every Indian photographer switch the day they see a demo</h2>
+  <div class="callout-grid">
+    <div class="ci"><div class="ci-num">①</div>Multi-event booking — one contract for all 5 wedding events. Zero competitors support this structure today.</div>
+    <div class="ci"><div class="ci-num">②</div>UPI QR code in invoice — client scans with GPay and it auto-reconciles. No chasing, no manual marking.</div>
+    <div class="ci"><div class="ci-num">③</div>WhatsApp automated reminders — at every milestone. 58.6% of Indian couples communicate only via WhatsApp.</div>
+    <div class="ci"><div class="ci-num">④</div>INR + GST invoicing — built for Indian taxation. No USD confusion, no manual conversion, CA-ready export.</div>
+    <div class="ci"><div class="ci-num">⑤</div>Magic link client portal — no login, no password, works on any Android phone including low-end devices.</div>
+    <div class="ci"><div class="ci-num">⑥</div>Gallery locks until final payment — client pays to unlock. Ends "deliver first, chase for weeks" permanently.</div>
+  </div>
+</div>
+
+</div><!-- /page -->
+</body>
+</html>
