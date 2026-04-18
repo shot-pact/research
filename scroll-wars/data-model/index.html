@@ -156,6 +156,36 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 .stat-v{font-family:var(--f-display);font-size:28px;letter-spacing:-.02em;margin-top:8px;color:var(--text)}
 .stat-v .u{font-family:var(--f-mono);font-size:11px;color:var(--text-dim);letter-spacing:.08em;margin-left:6px;font-weight:normal}
 
+/* API SURFACE */
+.api{margin-top:96px;padding-top:48px;border-top:1px solid var(--border)}
+.api > h2{font-family:var(--f-display);font-size:32px;letter-spacing:-.02em;text-transform:uppercase;margin-bottom:8px}
+.api > h2 .hl{color:var(--lime)}
+.api-head-sub{font-family:var(--f-mono);font-size:11px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:36px}
+.api-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:18px}
+.api-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;position:relative;transition:transform .15s,border-color .15s}
+.api-card:hover{border-color:var(--border-strong);transform:translateY(-1px)}
+.api-card-accent{position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--blue)}
+.api-card-head{padding:16px 18px 12px 22px;border-bottom:1px solid var(--border);background:var(--bg-card-2)}
+.api-card-name{font-family:var(--f-mono);font-size:14px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.api-card-name .acc{font-family:var(--f-display);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
+.api-card-desc{font-size:11px;color:var(--text-dim);margin-top:6px;line-height:1.4}
+.api-list{padding:6px 0}
+.api-row{display:grid;grid-template-columns:58px minmax(0,1fr) auto;align-items:center;gap:12px;padding:7px 18px 7px 22px;font-family:var(--f-mono);font-size:12px;transition:background .1s}
+.api-row:hover{background:rgba(255,255,255,.02)}
+.api-m{font-size:9px;font-weight:700;padding:3px 0;border-radius:4px;letter-spacing:.06em;text-align:center}
+.api-m.get{background:rgba(94,234,212,.12);color:var(--cyan)}
+.api-m.post{background:rgba(74,222,128,.12);color:var(--green)}
+.api-m.patch{background:rgba(251,191,36,.12);color:var(--gold)}
+.api-m.del{background:rgba(239,68,68,.12);color:var(--red)}
+.api-m.ws{background:rgba(167,139,250,.12);color:var(--violet)}
+.api-path{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.api-path .q{color:var(--text-muted);font-size:11px}
+.api-auth{font-size:11px;opacity:.55}
+.api-card-foot{border-top:1px dashed var(--border);padding:10px 18px 12px 22px;background:rgba(0,0,0,.15)}
+.api-ev{font-family:var(--f-mono);font-size:10px;color:var(--text-dim);padding:2px 0;line-height:1.5;letter-spacing:.01em}
+.api-ev .arr{color:var(--violet);margin-right:6px;font-weight:700}
+.api-ev .ev{color:var(--text);font-weight:600}
+
 /* FOOTER */
 .foot{margin-top:120px;padding-top:40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
 .foot-l{font-family:var(--f-mono);font-size:11px;color:var(--text-muted);letter-spacing:.08em}
@@ -479,6 +509,165 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- API SURFACE -->
+  <section class="api">
+    <h2>API <span class="hl">Surface</span></h2>
+    <div class="api-head-sub">REST + WEBSOCKET · JWT ACCESS / REFRESH · 30 REST ENDPOINTS · 1 WS CHANNEL · 🔓 PUBLIC · 🔒 AUTH</div>
+
+    <div class="api-grid">
+
+      <!-- AUTH -->
+      <div class="api-card">
+        <div class="api-card-accent"></div>
+        <div class="api-card-head">
+          <div class="api-card-name"><span class="acc">▸</span>Auth</div>
+          <div class="api-card-desc">Short-lived access token + long-lived refresh. Email or username login.</div>
+        </div>
+        <div class="api-list">
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/signup</span><span class="api-auth">🔓</span></div>
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/login</span><span class="api-auth">🔓</span></div>
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/refresh</span><span class="api-auth">🔓</span></div>
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/logout</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/auth/username-available<span class="q">?u=</span></span><span class="api-auth">🔓</span></div>
+        </div>
+      </div>
+
+      <!-- ME -->
+      <div class="api-card">
+        <div class="api-card-accent"></div>
+        <div class="api-card-head">
+          <div class="api-card-name"><span class="acc">▸</span>Me</div>
+          <div class="api-card-desc">Current user profile, settings, avatar. Returns computed title + live rank.</div>
+        </div>
+        <div class="api-list">
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/me</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m patch">PATCH</span><span class="api-path">/me</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/me/avatar-upload-url</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m patch">PATCH</span><span class="api-path">/me/avatar</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m del">DELETE</span><span class="api-path">/me</span><span class="api-auth">🔒</span></div>
+        </div>
+        <div class="api-card-foot">
+          <div class="api-ev">Avatar upload: presigned PUT → client uploads to R2 → PATCH /me/avatar confirms key</div>
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div class="api-card">
+        <div class="api-card-accent"></div>
+        <div class="api-card-head">
+          <div class="api-card-name"><span class="acc">▸</span>Users</div>
+          <div class="api-card-desc">Public profile view + search for friend discovery.</div>
+        </div>
+        <div class="api-list">
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/users/:username</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/users/search<span class="q">?q=</span></span><span class="api-auth">🔒</span></div>
+        </div>
+      </div>
+
+      <!-- FRIENDS -->
+      <div class="api-card">
+        <div class="api-card-accent"></div>
+        <div class="api-card-head">
+          <div class="api-card-name"><span class="acc">▸</span>Friends</div>
+          <div class="api-card-desc">Graph management. Symmetric visibility once accepted.</div>
+        </div>
+        <div class="api-list">
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/friends</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/friends/requests</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/friends/requests<span class="q">?dir=in|out</span></span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/friends/requests/:id/accept</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m del">DELETE</span><span class="api-path">/friends/requests/:id</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m del">DELETE</span><span class="api-path">/friends/:userId</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/friends/:userId/block</span><span class="api-auth">🔒</span></div>
+        </div>
+      </div>
+
+      <!-- SCROLL -->
+      <div class="api-card">
+        <div class="api-card-accent"></div>
+        <div class="api-card-head">
+          <div class="api-card-name"><span class="acc">▸</span>Scroll Sync <span style="font-family:var(--f-mono);font-size:9px;padding:2px 6px;background:rgba(212,255,61,.12);color:var(--lime);border-radius:4px;border:1px solid rgba(212,255,61,.3);letter-spacing:.08em;margin-left:auto">HOT</span></div>
+          <div class="api-card-desc">The only hot write path. Idempotent upsert keyed by (user_id, local_date).</div>
+        </div>
+        <div class="api-list">
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/scroll/sync</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/scroll/history<span class="q">?from=&amp;to=</span></span><span class="api-auth">🔒</span></div>
+        </div>
+      </div>
+
+      <!-- LEADERBOARDS -->
+      <div class="api-card">
+        <div class="api-card-accent"></div>
+        <div class="api-card-head">
+          <div class="api-card-name"><span class="acc">▸</span>Leaderboards</div>
+          <div class="api-card-desc">Top N + caller's row + up/down deltas vs yesterday. 30s Redis cache.</div>
+        </div>
+        <div class="api-list">
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/leaderboard/friends<span class="q">?window=today|week|month|all</span></span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/leaderboard/global<span class="q">?window=today|week|month|all</span></span><span class="api-auth">🔒</span></div>
+        </div>
+      </div>
+
+      <!-- ACHIEVEMENTS & CHAMPIONS -->
+      <div class="api-card">
+        <div class="api-card-accent"></div>
+        <div class="api-card-head">
+          <div class="api-card-name"><span class="acc">▸</span>Achievements &amp; Champions</div>
+          <div class="api-card-desc">Trophy screen feeds. Progress bars live-computed from users.lifetime_reels.</div>
+        </div>
+        <div class="api-list">
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/me/achievements</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/champions<span class="q">?period=week|month</span></span><span class="api-auth">🔒</span></div>
+        </div>
+      </div>
+
+      <!-- SHARING -->
+      <div class="api-card">
+        <div class="api-card-accent"></div>
+        <div class="api-card-head">
+          <div class="api-card-name"><span class="acc">▸</span>Sharing</div>
+          <div class="api-card-desc">Generate PNG story cards (satori/resvg) + public unfurl endpoint for IG link previews.</div>
+        </div>
+        <div class="api-list">
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/share-cards</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/s/:id</span><span class="api-auth">🔓</span></div>
+        </div>
+      </div>
+
+      <!-- WAITLIST -->
+      <div class="api-card">
+        <div class="api-card-accent"></div>
+        <div class="api-card-head">
+          <div class="api-card-name"><span class="acc">▸</span>Waitlist</div>
+          <div class="api-card-desc">"Notify Me" opt-in for Coming Soon features (Battle in v1).</div>
+        </div>
+        <div class="api-list">
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/waitlist/:feature</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m del">DELETE</span><span class="api-path">/waitlist/:feature</span><span class="api-auth">🔒</span></div>
+        </div>
+      </div>
+
+      <!-- LIVE + OPS -->
+      <div class="api-card">
+        <div class="api-card-accent"></div>
+        <div class="api-card-head">
+          <div class="api-card-name"><span class="acc">▸</span>Live &amp; Ops</div>
+          <div class="api-card-desc">Single authed socket per client — the only real-time channel (no push). Plus health probe.</div>
+        </div>
+        <div class="api-list">
+          <div class="api-row"><span class="api-m ws">WS</span><span class="api-path">/live</span><span class="api-auth">🔒</span></div>
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/health</span><span class="api-auth">🔓</span></div>
+        </div>
+        <div class="api-card-foot">
+          <div class="api-ev"><span class="arr">←</span><span class="ev">score:updated</span> { user_id, scope, score, rank }</div>
+          <div class="api-ev"><span class="arr">←</span><span class="ev">friend:joined</span> { user_id, display_name }</div>
+          <div class="api-ev"><span class="arr">←</span><span class="ev">champion:awarded</span> { period_type, period_start, user_id }</div>
+        </div>
+      </div>
+
     </div>
   </section>
 
