@@ -186,6 +186,24 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 .api-ev .arr{color:var(--violet);margin-right:6px;font-weight:700}
 .api-ev .ev{color:var(--text);font-weight:600}
 
+/* INFRASTRUCTURE */
+.infra{margin-top:96px;padding-top:48px;border-top:1px solid var(--border)}
+.infra > h2{font-family:var(--f-display);font-size:32px;letter-spacing:-.02em;text-transform:uppercase;margin-bottom:8px}
+.infra > h2 .hl{color:var(--cyan)}
+.infra-head-sub{font-family:var(--f-mono);font-size:11px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:36px}
+.infra-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.infra-c{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;transition:transform .15s,border-color .15s;display:flex;flex-direction:column}
+.infra-c:hover{border-color:var(--border-strong);transform:translateY(-1px)}
+.infra-c-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.infra-c-ic{width:34px;height:34px;border-radius:9px;background:var(--bg-elev);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.infra-c-n{font-family:var(--f-display);font-size:13px;letter-spacing:-.01em;flex:1;text-transform:uppercase}
+.infra-c-role{font-family:var(--f-mono);font-size:8px;color:var(--cyan);letter-spacing:.12em;text-transform:uppercase;background:rgba(94,234,212,.08);padding:3px 7px;border-radius:4px;border:1px solid rgba(94,234,212,.25);flex-shrink:0}
+.infra-c-d{font-size:12px;color:var(--text-dim);line-height:1.5;flex:1}
+.infra-c-d code{font-family:var(--f-mono);background:var(--bg-elev);padding:1px 6px;border-radius:4px;font-size:.85em;color:var(--cyan);border:1px solid var(--border)}
+.infra-c-prov{font-family:var(--f-mono);font-size:10px;color:var(--text-muted);letter-spacing:.04em;margin-top:12px;padding-top:10px;border-top:1px dashed var(--border);display:flex;align-items:center;justify-content:space-between}
+.infra-c-prov .lab{color:var(--text-faint)}
+.infra-c-prov .val{color:var(--text-dim)}
+
 /* FOOTER */
 .foot{margin-top:120px;padding-top:40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
 .foot-l{font-family:var(--f-mono);font-size:11px;color:var(--text-muted);letter-spacing:.08em}
@@ -236,7 +254,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
     <div class="dom-head">
       <span class="dom-num">01</span>
       <h2 class="dom-title"><span class="dom-pill"></span>Identity &amp; Social</h2>
-      <p class="dom-desc">Users and friendships. The social graph and who can see whose scores. No push infrastructure — live updates happen over the active WebSocket only.</p>
+      <p class="dom-desc">Users and friendships. Instagram OAuth is the only sign-in path — <code>instagram_id</code> is the identity anchor. Live updates happen over the active WebSocket only; no push infrastructure.</p>
     </div>
     <div class="tbls">
 
@@ -249,8 +267,10 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
         </div>
         <div class="cols">
           <div class="col"><span class="col-key pk">🔑</span><span class="col-name">id</span><span class="col-type">uuid</span></div>
-          <div class="col"><span class="col-key un">★</span><span class="col-name">email</span><span class="col-type">text</span></div>
-          <div class="col"><span class="col-key un">★</span><span class="col-name">username</span><span class="col-type">text</span></div>
+          <div class="col"><span class="col-key un">★</span><span class="col-name">instagram_id</span><span class="col-type">text · IG user id</span></div>
+          <div class="col"><span class="col-key un">★</span><span class="col-name">username</span><span class="col-type">text · seeded from IG handle</span></div>
+          <div class="col"><span></span><span class="col-name">instagram_handle</span><span class="col-type">text</span></div>
+          <div class="col"><span class="col-key un">★</span><span class="col-name">email</span><span class="col-type">text · nullable</span></div>
           <div class="col"><span></span><span class="col-name">display_name</span><span class="col-type">text</span></div>
           <div class="col"><span></span><span class="col-name">avatar_url</span><span class="col-type">text · R2 · nullable</span></div>
           <div class="col"><span></span><span class="col-name">country_code</span><span class="col-type">char(2)</span></div>
@@ -266,7 +286,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
           <div class="col"><span></span><span class="col-name">last_active_at</span><span class="col-type">timestamptz</span></div>
         </div>
         <div class="tbl-foot">
-          <div class="constraint unique"><span class="tag">UNIQUE</span>email, username</div>
+          <div class="constraint unique"><span class="tag">UNIQUE</span>instagram_id · username · email (when present)</div>
           <div class="constraint index"><span class="tag">INDEX</span>last_active_at DESC (for "active friends" queries)</div>
           <div class="constraint note"><span class="tag">DENORM</span>lifetime_reels, current_streak, last_scroll_date all maintained in the scroll-sync txn — never recomputed on read</div>
           <div class="constraint note"><span class="tag">AVATAR</span>User-uploaded to R2 via presigned PUT. On replace, old key queued for deletion — no row-level history kept.</div>
@@ -515,7 +535,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
   <!-- API SURFACE -->
   <section class="api">
     <h2>API <span class="hl">Surface</span></h2>
-    <div class="api-head-sub">REST + WEBSOCKET · JWT ACCESS / REFRESH · 30 REST ENDPOINTS · 1 WS CHANNEL · 🔓 PUBLIC · 🔒 AUTH</div>
+    <div class="api-head-sub">REST + WEBSOCKET · INSTAGRAM OAUTH + JWT · 29 REST ENDPOINTS · 1 WS CHANNEL · 🔓 PUBLIC · 🔒 AUTH</div>
 
     <div class="api-grid">
 
@@ -523,15 +543,17 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
       <div class="api-card">
         <div class="api-card-accent"></div>
         <div class="api-card-head">
-          <div class="api-card-name"><span class="acc">▸</span>Auth</div>
-          <div class="api-card-desc">Short-lived access token + long-lived refresh. Email or username login.</div>
+          <div class="api-card-name"><span class="acc">▸</span>Auth · Instagram OAuth</div>
+          <div class="api-card-desc">Instagram is the only identity provider. Backend exchanges the IG code for an IG user id + handle, then issues our own JWT + refresh pair.</div>
         </div>
         <div class="api-list">
-          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/signup</span><span class="api-auth">🔓</span></div>
-          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/login</span><span class="api-auth">🔓</span></div>
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/instagram/start</span><span class="api-auth">🔓</span></div>
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/auth/instagram/callback<span class="q">?code=</span></span><span class="api-auth">🔓</span></div>
           <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/refresh</span><span class="api-auth">🔓</span></div>
           <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/logout</span><span class="api-auth">🔒</span></div>
-          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/auth/username-available<span class="q">?u=</span></span><span class="api-auth">🔓</span></div>
+        </div>
+        <div class="api-card-foot">
+          <div class="api-ev">First-time login auto-creates <span class="ev">users</span> row: <span class="ev">username</span> seeded from IG handle (collision-suffixed), <span class="ev">avatar_url</span> pulled from IG, editable by user after.</div>
         </div>
       </div>
 
@@ -666,6 +688,116 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
           <div class="api-ev"><span class="arr">←</span><span class="ev">friend:joined</span> { user_id, display_name }</div>
           <div class="api-ev"><span class="arr">←</span><span class="ev">champion:awarded</span> { period_type, period_start, user_id }</div>
         </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- INFRASTRUCTURE -->
+  <section class="infra">
+    <h2>Infra <span class="hl">Stack</span></h2>
+    <div class="infra-head-sub">WHAT RUNS WHERE · MANAGED-FIRST · MOBILE-ONLY CLIENT</div>
+
+    <div class="infra-grid">
+
+      <div class="infra-c">
+        <div class="infra-c-head">
+          <div class="infra-c-ic">🧠</div>
+          <div class="infra-c-n">API Runtime</div>
+          <div class="infra-c-role">Compute</div>
+        </div>
+        <div class="infra-c-d">NestJS server handling every REST route + the WebSocket gateway. Stateless — scales horizontally behind the CDN.</div>
+        <div class="infra-c-prov"><span class="lab">HOST</span><span class="val">Fly.io · 2 regions</span></div>
+      </div>
+
+      <div class="infra-c">
+        <div class="infra-c-head">
+          <div class="infra-c-ic">🗄️</div>
+          <div class="infra-c-n">Postgres 16</div>
+          <div class="infra-c-role">Primary Store</div>
+        </div>
+        <div class="infra-c-d">Source of truth for all 8 tables. Daily scroll upsert is the only hot write. Read replicas for leaderboard scans at scale.</div>
+        <div class="infra-c-prov"><span class="lab">HOST</span><span class="val">Neon · managed</span></div>
+      </div>
+
+      <div class="infra-c">
+        <div class="infra-c-head">
+          <div class="infra-c-ic">⚡</div>
+          <div class="infra-c-n">Redis</div>
+          <div class="infra-c-role">Cache + Queue</div>
+        </div>
+        <div class="infra-c-d">30s leaderboard cache, yesterday's-rank snapshots, rate limiting, and the BullMQ job queue backend.</div>
+        <div class="infra-c-prov"><span class="lab">HOST</span><span class="val">Upstash · serverless</span></div>
+      </div>
+
+      <div class="infra-c">
+        <div class="infra-c-head">
+          <div class="infra-c-ic">📦</div>
+          <div class="infra-c-n">Object Storage</div>
+          <div class="infra-c-role">Blobs</div>
+        </div>
+        <div class="infra-c-d">User avatars + generated share cards. Direct-to-R2 uploads via presigned PUT — no binary bytes through the API.</div>
+        <div class="infra-c-prov"><span class="lab">HOST</span><span class="val">Cloudflare R2</span></div>
+      </div>
+
+      <div class="infra-c">
+        <div class="infra-c-head">
+          <div class="infra-c-ic">🌐</div>
+          <div class="infra-c-n">CDN + Edge</div>
+          <div class="infra-c-role">Delivery</div>
+        </div>
+        <div class="infra-c-d">Sits in front of R2 for global asset delivery and handles TLS termination for the API domain. Public share-card unfurls hit the edge cache.</div>
+        <div class="infra-c-prov"><span class="lab">HOST</span><span class="val">Cloudflare</span></div>
+      </div>
+
+      <div class="infra-c">
+        <div class="infra-c-head">
+          <div class="infra-c-ic">⏰</div>
+          <div class="infra-c-n">Job Runner</div>
+          <div class="infra-c-role">Async</div>
+        </div>
+        <div class="infra-c-d">BullMQ workers for weekly/monthly <code>champions</code> cron, deferred avatar-cleanup, and share-card PNG generation (satori → resvg).</div>
+        <div class="infra-c-prov"><span class="lab">HOST</span><span class="val">Fly.io · worker app</span></div>
+      </div>
+
+      <div class="infra-c">
+        <div class="infra-c-head">
+          <div class="infra-c-ic">📸</div>
+          <div class="infra-c-n">Instagram OAuth</div>
+          <div class="infra-c-role">Identity</div>
+        </div>
+        <div class="infra-c-d">Meta's Instagram Business Login flow — the only sign-in path. We request <code>instagram_business_basic</code> scope: user id, handle, profile pic. No ongoing IG API use.</div>
+        <div class="infra-c-prov"><span class="lab">PROVIDER</span><span class="val">Meta Graph API</span></div>
+      </div>
+
+      <div class="infra-c">
+        <div class="infra-c-head">
+          <div class="infra-c-ic">📱</div>
+          <div class="infra-c-n">Mobile Client</div>
+          <div class="infra-c-role">Client</div>
+        </div>
+        <div class="infra-c-d">Expo + React Native (iOS + Android from one codebase). OTA updates via EAS Update bypass app-store review for non-native fixes.</div>
+        <div class="infra-c-prov"><span class="lab">TOOL</span><span class="val">Expo EAS</span></div>
+      </div>
+
+      <div class="infra-c">
+        <div class="infra-c-head">
+          <div class="infra-c-ic">🔍</div>
+          <div class="infra-c-n">Observability</div>
+          <div class="infra-c-role">Ops</div>
+        </div>
+        <div class="infra-c-d">Sentry for errors + mobile crashes, structured JSON logs shipped to Axiom, Postgres slow-query log mirrored to the same. One dashboard for API p95.</div>
+        <div class="infra-c-prov"><span class="lab">STACK</span><span class="val">Sentry + Axiom</span></div>
+      </div>
+
+      <div class="infra-c">
+        <div class="infra-c-head">
+          <div class="infra-c-ic">🚀</div>
+          <div class="infra-c-n">CI / CD</div>
+          <div class="infra-c-role">Deploy</div>
+        </div>
+        <div class="infra-c-d">GitHub Actions runs test + typecheck on PR, deploys API + worker on merge to <code>main</code>. Secrets via 1Password CLI pulled at deploy time.</div>
+        <div class="infra-c-prov"><span class="lab">TOOL</span><span class="val">GitHub Actions</span></div>
       </div>
 
     </div>
