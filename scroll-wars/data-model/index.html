@@ -254,7 +254,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
     <div class="dom-head">
       <span class="dom-num">01</span>
       <h2 class="dom-title"><span class="dom-pill"></span>Identity &amp; Social</h2>
-      <p class="dom-desc">Users and friendships. Instagram OAuth is the only sign-in path — <code>instagram_id</code> is the identity anchor. Live updates happen over the active WebSocket only; no push infrastructure.</p>
+      <p class="dom-desc">Users and friendships. Facebook Login with IG linkage is the only sign-in path — we OAuth via FB, then pull the linked IG account's id + handle from the Graph API. <code>instagram_id</code> stays as the identity anchor. Live updates over the active WebSocket only; no push.</p>
     </div>
     <div class="tbls">
 
@@ -535,7 +535,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
   <!-- API SURFACE -->
   <section class="api">
     <h2>API <span class="hl">Surface</span></h2>
-    <div class="api-head-sub">REST + WEBSOCKET · INSTAGRAM OAUTH + JWT · 29 REST ENDPOINTS · 1 WS CHANNEL · 🔓 PUBLIC · 🔒 AUTH</div>
+    <div class="api-head-sub">REST + WEBSOCKET · FACEBOOK LOGIN + JWT · 29 REST ENDPOINTS · 1 WS CHANNEL · 🔓 PUBLIC · 🔒 AUTH</div>
 
     <div class="api-grid">
 
@@ -543,17 +543,18 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
       <div class="api-card">
         <div class="api-card-accent"></div>
         <div class="api-card-head">
-          <div class="api-card-name"><span class="acc">▸</span>Auth · Instagram OAuth</div>
-          <div class="api-card-desc">Instagram is the only identity provider. Backend exchanges the IG code for an IG user id + handle, then issues our own JWT + refresh pair.</div>
+          <div class="api-card-name"><span class="acc">▸</span>Auth · Facebook Login</div>
+          <div class="api-card-desc">Facebook OAuth fetches the user's linked IG account via Graph API. Backend extracts IG user id + handle, then issues our own JWT + refresh pair. No email/password path.</div>
         </div>
         <div class="api-list">
-          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/instagram/start</span><span class="api-auth">🔓</span></div>
-          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/auth/instagram/callback<span class="q">?code=</span></span><span class="api-auth">🔓</span></div>
+          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/facebook/start</span><span class="api-auth">🔓</span></div>
+          <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/auth/facebook/callback<span class="q">?code=</span></span><span class="api-auth">🔓</span></div>
           <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/refresh</span><span class="api-auth">🔓</span></div>
           <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/logout</span><span class="api-auth">🔒</span></div>
         </div>
         <div class="api-card-foot">
-          <div class="api-ev">First-time login auto-creates <span class="ev">users</span> row: <span class="ev">username</span> seeded from IG handle (collision-suffixed), <span class="ev">avatar_url</span> pulled from IG, editable by user after.</div>
+          <div class="api-ev">First-time login auto-creates <span class="ev">users</span> row from the linked IG account: <span class="ev">username</span> seeded from IG handle (collision-suffixed), <span class="ev">avatar_url</span> pulled from IG, editable after.</div>
+          <div class="api-ev" style="margin-top:6px;color:var(--text-muted)">Requires IG account linked to a Facebook page — enforced at callback; unlinked users see an explainer screen.</div>
         </div>
       </div>
 
@@ -762,11 +763,11 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 
       <div class="infra-c">
         <div class="infra-c-head">
-          <div class="infra-c-ic">📸</div>
-          <div class="infra-c-n">Instagram OAuth</div>
+          <div class="infra-c-ic">📘</div>
+          <div class="infra-c-n">Facebook Login</div>
           <div class="infra-c-role">Identity</div>
         </div>
-        <div class="infra-c-d">Meta's Instagram Business Login flow — the only sign-in path. We request <code>instagram_business_basic</code> scope: user id, handle, profile pic. No ongoing IG API use.</div>
+        <div class="infra-c-d">Meta Facebook Login flow + <code>instagram_basic</code> scope. On callback we hit the Graph API to resolve the linked IG account's id, handle, and avatar. Works for any IG personal/business account linked to a FB page.</div>
         <div class="infra-c-prov"><span class="lab">PROVIDER</span><span class="val">Meta Graph API</span></div>
       </div>
 
@@ -782,12 +783,32 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 
       <div class="infra-c">
         <div class="infra-c-head">
-          <div class="infra-c-ic">🔍</div>
-          <div class="infra-c-n">Observability</div>
-          <div class="infra-c-role">Ops</div>
+          <div class="infra-c-ic">🐛</div>
+          <div class="infra-c-n">Sentry</div>
+          <div class="infra-c-role">Errors</div>
         </div>
-        <div class="infra-c-d">Sentry for errors + mobile crashes, structured JSON logs shipped to Axiom, Postgres slow-query log mirrored to the same. One dashboard for API p95.</div>
-        <div class="infra-c-prov"><span class="lab">STACK</span><span class="val">Sentry + Axiom</span></div>
+        <div class="infra-c-d">API exceptions, React Native crashes (symbolicated via EAS source maps), and performance transactions. Release health per app version.</div>
+        <div class="infra-c-prov"><span class="lab">SCOPE</span><span class="val">Errors · Crashes · APM</span></div>
+      </div>
+
+      <div class="infra-c">
+        <div class="infra-c-head">
+          <div class="infra-c-ic">📊</div>
+          <div class="infra-c-n">PostHog</div>
+          <div class="infra-c-role">Product</div>
+        </div>
+        <div class="infra-c-d">Event tracking, funnels, retention cohorts, session replay, and feature flags. Drives the Coming Soon rollout gates for v2 Battle.</div>
+        <div class="infra-c-prov"><span class="lab">SCOPE</span><span class="val">Analytics · Flags · Replay</span></div>
+      </div>
+
+      <div class="infra-c">
+        <div class="infra-c-head">
+          <div class="infra-c-ic">📈</div>
+          <div class="infra-c-n">Grafana Cloud</div>
+          <div class="infra-c-role">Infra</div>
+        </div>
+        <div class="infra-c-d">Prometheus metrics (API p95, WS connections, sync rate), Loki for structured logs, Tempo for distributed traces. One pane for system health.</div>
+        <div class="infra-c-prov"><span class="lab">SCOPE</span><span class="val">Metrics · Logs · Traces</span></div>
       </div>
 
       <div class="infra-c">
