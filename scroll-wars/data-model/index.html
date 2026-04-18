@@ -174,7 +174,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
       <span class="div"></span>
       <span>POSTGRES 16</span>
       <span class="div"></span>
-      <span>14 TABLES · 6 DOMAINS</span>
+      <span>8 TABLES · 5 DOMAINS</span>
       <span class="div"></span>
       <span>APR 2026</span>
     </div>
@@ -194,7 +194,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 
     <!-- Stats -->
     <div class="stats-row">
-      <div class="stat"><div class="stat-k">Total Tables</div><div class="stat-v">14</div></div>
+      <div class="stat"><div class="stat-k">Total Tables</div><div class="stat-v">8</div></div>
       <div class="stat"><div class="stat-k">Hot Table</div><div class="stat-v" style="color:var(--lime)">daily_scroll_stats</div></div>
       <div class="stat"><div class="stat-k">Write Pattern</div><div class="stat-v">1<span class="u">UPSERT/USER/DAY</span></div></div>
       <div class="stat"><div class="stat-k">Read Cache TTL</div><div class="stat-v">30<span class="u">SECONDS</span></div></div>
@@ -206,7 +206,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
     <div class="dom-head">
       <span class="dom-num">01</span>
       <h2 class="dom-title"><span class="dom-pill"></span>Identity &amp; Social</h2>
-      <p class="dom-desc">Users, friendships, device tokens. The social graph and who can see whose scores.</p>
+      <p class="dom-desc">Users and friendships. The social graph and who can see whose scores. No push infrastructure — live updates happen over the active WebSocket only.</p>
     </div>
     <div class="tbls">
 
@@ -215,24 +215,31 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
         <div class="tbl-accent"></div>
         <div class="tbl-head">
           <div class="tbl-name"><span class="acc">▸</span>users</div>
-          <div class="tbl-desc">Root identity. Stores timezone (drives all daily/weekly boundaries) and personalized <code>avg_reel_seconds</code>.</div>
+          <div class="tbl-desc">Root identity + denormalized streak state. Stores timezone (drives daily/weekly boundaries) and personalized <code>avg_reel_seconds</code>. Streak fields are mutated in the same txn as scroll sync.</div>
         </div>
         <div class="cols">
           <div class="col"><span class="col-key pk">🔑</span><span class="col-name">id</span><span class="col-type">uuid</span></div>
           <div class="col"><span class="col-key un">★</span><span class="col-name">email</span><span class="col-type">text</span></div>
           <div class="col"><span class="col-key un">★</span><span class="col-name">username</span><span class="col-type">text</span></div>
           <div class="col"><span></span><span class="col-name">display_name</span><span class="col-type">text</span></div>
-          <div class="col"><span></span><span class="col-name">avatar_url</span><span class="col-type">text</span></div>
+          <div class="col"><span></span><span class="col-name">avatar_url</span><span class="col-type">text · R2 · nullable</span></div>
           <div class="col"><span></span><span class="col-name">country_code</span><span class="col-type">char(2)</span></div>
           <div class="col"><span></span><span class="col-name">platform</span><span class="col-type"><span class="enum">'ios' | 'android'</span></span></div>
           <div class="col"><span class="col-key ix">⚡</span><span class="col-name">timezone</span><span class="col-type">text</span></div>
           <div class="col"><span></span><span class="col-name">avg_reel_seconds</span><span class="col-type">int · dflt 20</span></div>
+          <div class="col"><span></span><span class="col-name">lifetime_reels</span><span class="col-type">bigint · dflt 0</span></div>
+          <div class="col"><span></span><span class="col-name">current_streak</span><span class="col-type">int · dflt 0</span></div>
+          <div class="col"><span></span><span class="col-name">longest_streak</span><span class="col-type">int · dflt 0</span></div>
+          <div class="col"><span></span><span class="col-name">last_scroll_date</span><span class="col-type">date · nullable</span></div>
+          <div class="col"><span></span><span class="col-name">freeze_available</span><span class="col-type">bool · dflt true</span></div>
           <div class="col"><span></span><span class="col-name">onboarded_at</span><span class="col-type">timestamptz</span></div>
           <div class="col"><span></span><span class="col-name">last_active_at</span><span class="col-type">timestamptz</span></div>
         </div>
         <div class="tbl-foot">
           <div class="constraint unique"><span class="tag">UNIQUE</span>email, username</div>
           <div class="constraint index"><span class="tag">INDEX</span>last_active_at DESC (for "active friends" queries)</div>
+          <div class="constraint note"><span class="tag">DENORM</span>lifetime_reels, current_streak, last_scroll_date all maintained in the scroll-sync txn — never recomputed on read</div>
+          <div class="constraint note"><span class="tag">AVATAR</span>User-uploaded to R2 via presigned PUT. On replace, old key queued for deletion — no row-level history kept.</div>
         </div>
       </div>
 
@@ -244,38 +251,16 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
           <div class="tbl-desc">Directed request → bidirectional visibility when accepted. Symmetric reads via <code>requester_id</code> OR <code>addressee_id</code>.</div>
         </div>
         <div class="cols">
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">id</span><span class="col-type">uuid</span></div>
-          <div class="col"><span class="col-key fk">🔗</span><span class="col-name">requester_id</span><span class="col-type"><span class="ref">users.id</span></span></div>
-          <div class="col"><span class="col-key fk">🔗</span><span class="col-name">addressee_id</span><span class="col-type"><span class="ref">users.id</span></span></div>
+          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">requester_id</span><span class="col-type"><span class="ref">users.id</span></span></div>
+          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">addressee_id</span><span class="col-type"><span class="ref">users.id</span></span></div>
           <div class="col"><span></span><span class="col-name">status</span><span class="col-type"><span class="enum">'pending' | 'accepted' | 'blocked'</span></span></div>
           <div class="col"><span></span><span class="col-name">created_at</span><span class="col-type">timestamptz</span></div>
-          <div class="col"><span></span><span class="col-name">accepted_at</span><span class="col-type">timestamptz</span></div>
+          <div class="col"><span></span><span class="col-name">accepted_at</span><span class="col-type">timestamptz · nullable</span></div>
         </div>
         <div class="tbl-foot">
-          <div class="constraint unique"><span class="tag">UNIQUE</span>(requester_id, addressee_id)</div>
+          <div class="constraint unique"><span class="tag">PKEY</span>(requester_id, addressee_id) · no surrogate uuid</div>
           <div class="constraint check"><span class="tag">CHECK</span>requester_id &lt;&gt; addressee_id</div>
-          <div class="constraint index"><span class="tag">INDEX</span>addressee_id, status (incoming requests)</div>
-        </div>
-      </div>
-
-      <!-- device_tokens -->
-      <div class="tbl">
-        <div class="tbl-accent"></div>
-        <div class="tbl-head">
-          <div class="tbl-name"><span class="acc">▸</span>device_tokens</div>
-          <div class="tbl-desc">FCM (Android) / APNs (iOS) push targets. Users can have multiple devices.</div>
-        </div>
-        <div class="cols">
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">id</span><span class="col-type">uuid</span></div>
-          <div class="col"><span class="col-key fk">🔗</span><span class="col-name">user_id</span><span class="col-type"><span class="ref">users.id</span></span></div>
-          <div class="col"><span></span><span class="col-name">platform</span><span class="col-type"><span class="enum">'ios' | 'android'</span></span></div>
-          <div class="col"><span class="col-key un">★</span><span class="col-name">token</span><span class="col-type">text</span></div>
-          <div class="col"><span></span><span class="col-name">created_at</span><span class="col-type">timestamptz</span></div>
-          <div class="col"><span></span><span class="col-name">last_used_at</span><span class="col-type">timestamptz</span></div>
-        </div>
-        <div class="tbl-foot">
-          <div class="constraint unique"><span class="tag">UNIQUE</span>token</div>
-          <div class="constraint index"><span class="tag">INDEX</span>user_id</div>
+          <div class="constraint index"><span class="tag">INDEX</span>(addressee_id, status) · incoming requests feed</div>
         </div>
       </div>
 
@@ -287,7 +272,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
     <div class="dom-head">
       <span class="dom-num">02</span>
       <h2 class="dom-title"><span class="dom-pill"></span>Scroll Core</h2>
-      <p class="dom-desc">The source of truth. Every number in the app derives from these two tables.</p>
+      <p class="dom-desc">The source of truth. Every number in the app derives from this one table. Yesterday's ranks (for delta arrows) are computed live at small scale; cached in Redis at global scale — never persisted in Postgres.</p>
     </div>
     <div class="tbls">
 
@@ -296,105 +281,32 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
         <div class="tbl-accent"></div>
         <div class="tbl-head">
           <div class="tbl-name"><span class="acc">▸</span>daily_scroll_stats <span style="font-family:var(--f-mono);font-size:9px;padding:2px 6px;background:rgba(212,255,61,.12);color:var(--lime);border-radius:4px;border:1px solid rgba(212,255,61,.3);letter-spacing:.08em;margin-left:auto">HOT</span></div>
-          <div class="tbl-desc">The one write your backend cares about. Upsert per user per local day. Everything projects from here.</div>
+          <div class="tbl-desc">The one write your backend cares about. Upsert per user per local day. Everything projects from here. 5 columns, composite PK — tight enough to stay in buffer cache.</div>
         </div>
         <div class="cols">
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">id</span><span class="col-type">uuid</span></div>
-          <div class="col"><span class="col-key fk">🔗</span><span class="col-name">user_id</span><span class="col-type"><span class="ref">users.id</span></span></div>
-          <div class="col"><span class="col-key ix">⚡</span><span class="col-name">local_date</span><span class="col-type">date</span></div>
+          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">user_id</span><span class="col-type"><span class="ref">users.id</span></span></div>
+          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">local_date</span><span class="col-type">date</span></div>
           <div class="col"><span></span><span class="col-name">instagram_seconds</span><span class="col-type">int</span></div>
           <div class="col"><span></span><span class="col-name">reels_scrolled</span><span class="col-type">int</span></div>
-          <div class="col"><span></span><span class="col-name">avg_reel_seconds_used</span><span class="col-type">int</span></div>
-          <div class="col"><span></span><span class="col-name">raw_payload</span><span class="col-type">jsonb</span></div>
           <div class="col"><span></span><span class="col-name">synced_at</span><span class="col-type">timestamptz</span></div>
         </div>
         <div class="tbl-foot">
-          <div class="constraint unique"><span class="tag">UNIQUE</span>(user_id, local_date) · the upsert target</div>
-          <div class="constraint check"><span class="tag">DERIVED</span>reels_scrolled = instagram_seconds / avg_reel_seconds_used</div>
-          <div class="constraint index"><span class="tag">INDEX</span>(user_id, local_date DESC) · history queries</div>
-        </div>
-      </div>
-
-      <!-- daily_rank_snapshots -->
-      <div class="tbl">
-        <div class="tbl-accent"></div>
-        <div class="tbl-head">
-          <div class="tbl-name"><span class="acc">▸</span>daily_rank_snapshots</div>
-          <div class="tbl-desc">Frozen yesterday-ranks so today's leaderboard can show up/down arrows. Written by nightly cron per timezone.</div>
-        </div>
-        <div class="cols">
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">user_id</span><span class="col-type"><span class="ref">users.id</span></span></div>
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">snapshot_date</span><span class="col-type">date</span></div>
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">scope_type</span><span class="col-type"><span class="enum">'friends' | 'global'</span></span></div>
-          <div class="col"><span></span><span class="col-name">rank</span><span class="col-type">int</span></div>
-          <div class="col"><span></span><span class="col-name">score</span><span class="col-type">int</span></div>
-        </div>
-        <div class="tbl-foot">
-          <div class="constraint unique"><span class="tag">PKEY</span>(user_id, snapshot_date, scope_type)</div>
-          <div class="constraint note"><span class="tag">NOTE</span>Compacted after 30d. Only recent snapshots needed for delta arrows.</div>
+          <div class="constraint unique"><span class="tag">PKEY</span>(user_id, local_date) · the upsert target, no surrogate uuid</div>
+          <div class="constraint check"><span class="tag">DERIVED</span>reels_scrolled = instagram_seconds ÷ users.avg_reel_seconds (snapshot of divisor not persisted — reproducible)</div>
+          <div class="constraint index"><span class="tag">INDEX</span>(local_date, reels_scrolled DESC) · global leaderboard scan</div>
+          <div class="constraint note"><span class="tag">AUDIT</span>Raw sync payload streamed to S3 NDJSON — not stored on the hot row</div>
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- DOMAIN 3: STREAKS & TITLES -->
-  <section class="domain d-streak">
-    <div class="dom-head">
-      <span class="dom-num">03</span>
-      <h2 class="dom-title"><span class="dom-pill"></span>Streaks &amp; Titles</h2>
-      <p class="dom-desc">Titles are computed at read-time from the ladder. Streaks are mutated on every sync.</p>
-    </div>
-    <div class="tbls">
-
-      <!-- user_streaks -->
-      <div class="tbl">
-        <div class="tbl-accent"></div>
-        <div class="tbl-head">
-          <div class="tbl-name"><span class="acc">▸</span>user_streaks</div>
-          <div class="tbl-desc">One row per user. Mutated by the sync handler — consecutive day increments, gap resets.</div>
-        </div>
-        <div class="cols">
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">user_id</span><span class="col-type"><span class="ref">users.id</span></span></div>
-          <div class="col"><span></span><span class="col-name">current_streak</span><span class="col-type">int · dflt 0</span></div>
-          <div class="col"><span></span><span class="col-name">longest_streak</span><span class="col-type">int · dflt 0</span></div>
-          <div class="col"><span></span><span class="col-name">last_scroll_date</span><span class="col-type">date</span></div>
-          <div class="col"><span></span><span class="col-name">freeze_available</span><span class="col-type">boolean</span></div>
-        </div>
-        <div class="tbl-foot">
-          <div class="constraint note"><span class="tag">DERIVED</span>From daily_scroll_stats.local_date sequence</div>
-        </div>
-      </div>
-
-      <!-- title_tiers -->
-      <div class="tbl">
-        <div class="tbl-accent"></div>
-        <div class="tbl-head">
-          <div class="tbl-name"><span class="acc">▸</span>title_tiers <span class="seed">SEED</span></div>
-          <div class="tbl-desc">Static ladder. Title = tier where <code>score ≥ min_score</code>, max match wins. Computed on read, never stored per user.</div>
-        </div>
-        <div class="cols">
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">code</span><span class="col-type">text</span></div>
-          <div class="col"><span></span><span class="col-name">name</span><span class="col-type">text</span></div>
-          <div class="col"><span></span><span class="col-name">description</span><span class="col-type">text</span></div>
-          <div class="col"><span></span><span class="col-name">min_score</span><span class="col-type">int</span></div>
-          <div class="col"><span></span><span class="col-name">icon_url</span><span class="col-type">text</span></div>
-          <div class="col"><span></span><span class="col-name">sort_order</span><span class="col-type">int</span></div>
-        </div>
-        <div class="tbl-foot">
-          <div class="constraint note"><span class="tag">SEED</span>casual_clicker · thumb_athlete · reel_zombie · scroll_demon · scroll_legend</div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- DOMAIN 4: ACHIEVEMENTS -->
+  <!-- DOMAIN 3: ACHIEVEMENTS -->
   <section class="domain d-ach">
     <div class="dom-head">
-      <span class="dom-num">04</span>
+      <span class="dom-num">03</span>
       <h2 class="dom-title"><span class="dom-pill"></span>Achievements &amp; Champions</h2>
-      <p class="dom-desc">Permanent badges once earned. Milestones, streak rewards, and rank-victory prestige.</p>
+      <p class="dom-desc">Permanent badges once earned. Milestones, streak rewards, and rank-victory prestige. Title tiers (5 static rows) live as a code constant — not a table.</p>
     </div>
     <div class="tbls">
 
@@ -403,19 +315,17 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
         <div class="tbl-accent"></div>
         <div class="tbl-head">
           <div class="tbl-name"><span class="acc">▸</span>achievements <span class="seed">SEED</span></div>
-          <div class="tbl-desc">Static catalog of every possible badge, grouped by category for Trophy screen sections.</div>
+          <div class="tbl-desc">Static catalog — kept in DB (not code) purely for FK integrity on <code>user_achievements</code>. Display metadata only; unlock rules live in the sync handler keyed by <code>code</code>.</div>
         </div>
         <div class="cols">
           <div class="col"><span class="col-key pk">🔑</span><span class="col-name">code</span><span class="col-type">text</span></div>
           <div class="col"><span></span><span class="col-name">name</span><span class="col-type">text</span></div>
           <div class="col"><span></span><span class="col-name">description</span><span class="col-type">text</span></div>
           <div class="col"><span></span><span class="col-name">category</span><span class="col-type"><span class="enum">'milestone' | 'streak' | 'champion'</span></span></div>
-          <div class="col"><span></span><span class="col-name">trigger_type</span><span class="col-type"><span class="enum">total_reels · streak_days · weekly_champ · monthly_champ · friends_top</span></span></div>
-          <div class="col"><span></span><span class="col-name">trigger_value</span><span class="col-type">int · null for champ</span></div>
           <div class="col"><span></span><span class="col-name">icon_url</span><span class="col-type">text</span></div>
         </div>
         <div class="tbl-foot">
-          <div class="constraint note"><span class="tag">SEED</span>~15 rows: 6 milestones, 4 streaks, 3 champion + 2 misc</div>
+          <div class="constraint note"><span class="tag">SEED</span>~15 rows: 6 milestones, 4 streaks, 3 champion + 2 misc. Trigger rules hardcoded in backend, not stored.</div>
         </div>
       </div>
 
@@ -438,109 +348,45 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
         </div>
       </div>
 
-      <!-- champion_records -->
+      <!-- champions -->
       <div class="tbl">
         <div class="tbl-accent"></div>
         <div class="tbl-head">
-          <div class="tbl-name"><span class="acc">▸</span>champion_records</div>
-          <div class="tbl-desc">History of weekly/monthly/daily rank victories. Feeds Home spotlights &amp; champion achievements.</div>
+          <div class="tbl-name"><span class="acc">▸</span>champions</div>
+          <div class="tbl-desc">Global weekly/monthly winners. Feeds Home spotlights. Friend-scope "#1 for 5 days" tracks as a counter on <code>user_achievements.progress</code> — no row here.</div>
         </div>
         <div class="cols">
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">id</span><span class="col-type">uuid</span></div>
+          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">period_type</span><span class="col-type"><span class="enum">'week' | 'month'</span></span></div>
+          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">period_start</span><span class="col-type">date</span></div>
           <div class="col"><span class="col-key fk">🔗</span><span class="col-name">user_id</span><span class="col-type"><span class="ref">users.id</span></span></div>
-          <div class="col"><span></span><span class="col-name">period_type</span><span class="col-type"><span class="enum">'week' | 'month' | 'friends_day'</span></span></div>
-          <div class="col"><span class="col-key ix">⚡</span><span class="col-name">period_start</span><span class="col-type">date</span></div>
-          <div class="col"><span></span><span class="col-name">period_end</span><span class="col-type">date</span></div>
-          <div class="col"><span></span><span class="col-name">scope_type</span><span class="col-type"><span class="enum">'friends' | 'global'</span></span></div>
-          <div class="col"><span></span><span class="col-name">scope_id</span><span class="col-type">uuid · nullable</span></div>
           <div class="col"><span></span><span class="col-name">score</span><span class="col-type">int</span></div>
           <div class="col"><span></span><span class="col-name">awarded_at</span><span class="col-type">timestamptz</span></div>
         </div>
         <div class="tbl-foot">
-          <div class="constraint unique"><span class="tag">UNIQUE</span>(period_type, period_start, scope_type, scope_id)</div>
-          <div class="constraint note"><span class="tag">WRITE</span>Sunday 23:59 cron + monthly 1st 00:00 cron (per tz)</div>
+          <div class="constraint unique"><span class="tag">PKEY</span>(period_type, period_start) · no surrogate uuid, no scope columns</div>
+          <div class="constraint note"><span class="tag">WRITE</span>Sunday 23:59 UTC cron + monthly 1st 00:00 UTC cron (one row per period)</div>
+          <div class="constraint note"><span class="tag">DERIVED</span>period_end = period_start + 6d / +1mo · computed, not stored</div>
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- DOMAIN 5: SQUADS & BATTLE -->
+  <!-- DOMAIN 4: BATTLE -->
   <section class="domain d-squad">
     <div class="dom-head">
-      <span class="dom-num">05</span>
-      <h2 class="dom-title"><span class="dom-pill"></span>Squads &amp; Battle</h2>
-      <p class="dom-desc">Stubbed for v1 (Battle tab shows Coming Soon). Full schema ready for v2 rollout.</p>
+      <span class="dom-num">04</span>
+      <h2 class="dom-title"><span class="dom-pill"></span>Battle</h2>
+      <p class="dom-desc">v1 ships only the waitlist — Battle itself is a v2 feature. <code>squads</code>, <code>squad_members</code>, <code>squad_battles</code> arrive in a v2 schema addendum when the feature actually ships.</p>
     </div>
     <div class="tbls">
-
-      <!-- squads -->
-      <div class="tbl">
-        <div class="tbl-accent"></div>
-        <div class="tbl-head">
-          <div class="tbl-name"><span class="acc">▸</span>squads</div>
-          <div class="tbl-desc">Named groups with a short shareable join code. Owner can manage members.</div>
-        </div>
-        <div class="cols">
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">id</span><span class="col-type">uuid</span></div>
-          <div class="col"><span></span><span class="col-name">name</span><span class="col-type">text</span></div>
-          <div class="col"><span class="col-key un">★</span><span class="col-name">join_code</span><span class="col-type">char(6)</span></div>
-          <div class="col"><span></span><span class="col-name">avatar_url</span><span class="col-type">text</span></div>
-          <div class="col"><span class="col-key fk">🔗</span><span class="col-name">created_by</span><span class="col-type"><span class="ref">users.id</span></span></div>
-          <div class="col"><span></span><span class="col-name">created_at</span><span class="col-type">timestamptz</span></div>
-        </div>
-        <div class="tbl-foot">
-          <div class="constraint unique"><span class="tag">UNIQUE</span>join_code (case-insensitive)</div>
-        </div>
-      </div>
-
-      <!-- squad_members -->
-      <div class="tbl">
-        <div class="tbl-accent"></div>
-        <div class="tbl-head">
-          <div class="tbl-name"><span class="acc">▸</span>squad_members</div>
-          <div class="tbl-desc">Junction. One user can be in multiple squads (up to N, TBD in beta).</div>
-        </div>
-        <div class="cols">
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">squad_id</span><span class="col-type"><span class="ref">squads.id</span></span></div>
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">user_id</span><span class="col-type"><span class="ref">users.id</span></span></div>
-          <div class="col"><span></span><span class="col-name">role</span><span class="col-type"><span class="enum">'owner' | 'member'</span></span></div>
-          <div class="col"><span></span><span class="col-name">joined_at</span><span class="col-type">timestamptz</span></div>
-        </div>
-        <div class="tbl-foot">
-          <div class="constraint unique"><span class="tag">PKEY</span>(squad_id, user_id)</div>
-          <div class="constraint index"><span class="tag">INDEX</span>user_id · "my squads" queries</div>
-        </div>
-      </div>
-
-      <!-- squad_battles -->
-      <div class="tbl">
-        <div class="tbl-accent"></div>
-        <div class="tbl-head">
-          <div class="tbl-name"><span class="acc">▸</span>squad_battles</div>
-          <div class="tbl-desc">Time-boxed contests. Score = sum of members' scrolls during window. Winner gets a permanent badge.</div>
-        </div>
-        <div class="cols">
-          <div class="col"><span class="col-key pk">🔑</span><span class="col-name">id</span><span class="col-type">uuid</span></div>
-          <div class="col"><span class="col-key fk">🔗</span><span class="col-name">squad_a_id</span><span class="col-type"><span class="ref">squads.id</span></span></div>
-          <div class="col"><span class="col-key fk">🔗</span><span class="col-name">squad_b_id</span><span class="col-type"><span class="ref">squads.id</span></span></div>
-          <div class="col"><span></span><span class="col-name">duration_type</span><span class="col-type"><span class="enum">'24h' | '7d'</span></span></div>
-          <div class="col"><span></span><span class="col-name">starts_at</span><span class="col-type">timestamptz</span></div>
-          <div class="col"><span></span><span class="col-name">ends_at</span><span class="col-type">timestamptz</span></div>
-          <div class="col"><span class="col-key fk">🔗</span><span class="col-name">winner_squad_id</span><span class="col-type"><span class="ref">squads.id</span></span></div>
-        </div>
-        <div class="tbl-foot">
-          <div class="constraint check"><span class="tag">CHECK</span>squad_a_id &lt;&gt; squad_b_id</div>
-          <div class="constraint index"><span class="tag">INDEX</span>(ends_at) · for tallying on close</div>
-        </div>
-      </div>
 
       <!-- feature_waitlist -->
       <div class="tbl">
         <div class="tbl-accent"></div>
         <div class="tbl-head">
           <div class="tbl-name"><span class="acc">▸</span>feature_waitlist</div>
-          <div class="tbl-desc">Opt-in for "Notify Me" CTAs on Coming Soon features. Drives launch-day push blast.</div>
+          <div class="tbl-desc">Opt-in for "Notify Me" CTAs on Coming Soon features. On launch day, waitlisted users see a "You're in" banner on next app open — no push channel exists.</div>
         </div>
         <div class="cols">
           <div class="col"><span class="col-key pk">🔑</span><span class="col-name">user_id</span><span class="col-type"><span class="ref">users.id</span></span></div>
@@ -555,10 +401,10 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
     </div>
   </section>
 
-  <!-- DOMAIN 6: SHARING -->
+  <!-- DOMAIN 5: SHARING -->
   <section class="domain d-share">
     <div class="dom-head">
-      <span class="dom-num">06</span>
+      <span class="dom-num">05</span>
       <h2 class="dom-title"><span class="dom-pill"></span>Sharing</h2>
       <p class="dom-desc">Generated story cards for Instagram. Rendered server-side as PNG, hosted on R2.</p>
     </div>
@@ -607,15 +453,15 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
         <div class="flow-item">
           <div class="flow-item-ic">🔥</div>
           <div class="flow-item-t">
-            <div class="flow-item-name">user_streaks (mutate)</div>
-            <div class="flow-item-desc">Compare local_date to last_scroll_date · increment or reset</div>
+            <div class="flow-item-name">users (mutate)</div>
+            <div class="flow-item-desc">Bump lifetime_reels, update streak fields by comparing local_date to last_scroll_date. Single UPDATE, same txn.</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-item-ic">🏆</div>
           <div class="flow-item-t">
             <div class="flow-item-name">user_achievements (upsert)</div>
-            <div class="flow-item-desc">Check milestone &amp; streak triggers against new totals</div>
+            <div class="flow-item-desc">O(1) check against users.lifetime_reels + users.current_streak — no aggregate scan needed</div>
           </div>
         </div>
         <div class="flow-item">
@@ -629,14 +475,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
           <div class="flow-item-ic">📡</div>
           <div class="flow-item-t">
             <div class="flow-item-name">ws: score:updated (broadcast)</div>
-            <div class="flow-item-desc">Push to every connected friend socket for live LB</div>
-          </div>
-        </div>
-        <div class="flow-item">
-          <div class="flow-item-ic">🔔</div>
-          <div class="flow-item-t">
-            <div class="flow-item-name">push: rank:overtaken (fire)</div>
-            <div class="flow-item-desc">If this sync pushed a friend down, notify them</div>
+            <div class="flow-item-desc">Fan out to every connected friend socket for live LB · the only real-time channel (no push)</div>
           </div>
         </div>
       </div>
@@ -647,8 +486,8 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
   <footer class="foot">
     <div class="foot-l"><b>ReelRace</b> · SCHEMA v1.0 / POSTGRES 16 / APR 2026</div>
     <div class="foot-r">
-      <span>14 TABLES</span>
-      <span>6 DOMAINS</span>
+      <span>8 TABLES</span>
+      <span>5 DOMAINS</span>
       <span>1 HOT PATH</span>
     </div>
   </footer>
