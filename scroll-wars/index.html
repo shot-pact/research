@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReelRace — Visual Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bricolage+Grotesque:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#08080d;
+  --bg-elev:#11111b;
+  --bg-card:#191926;
+  --bg-card-2:#22223a;
+  --border:rgba(255,255,255,0.07);
+  --border-strong:rgba(255,255,255,0.16);
+  --text:#f5f5fa;
+  --text-dim:#9191a8;
+  --text-muted:#55556c;
+  --lime:#d4ff3d;
+  --pink:#ff3d8f;
+  --violet:#a78bfa;
+  --orange:#ff6b35;
+  --cyan:#5eead4;
+  --gold:#fbbf24;
+  --red:#ef4444;
+  --green:#4ade80;
+  --blue:#60a5fa;
+  --f-display:"Archivo Black",sans-serif;
+  --f-body:"Bricolage Grotesque",sans-serif;
+  --f-mono:"JetBrains Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:var(--f-body);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;padding:56px 24px 96px;overflow-x:hidden;position:relative}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 15% 5%,rgba(167,139,250,.09),transparent 45%),radial-gradient(circle at 85% 90%,rgba(212,255,61,.06),transparent 45%),radial-gradient(circle at 50% 50%,rgba(255,61,143,.04),transparent 70%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+.page{position:relative;z-index:1;max-width:1640px;margin:0 auto}
+
+/* HERO */
+.hero{padding-bottom:40px;margin-bottom:56px;border-bottom:1px solid var(--border);position:relative}
+.hero-meta{display:flex;gap:14px;align-items:center;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:28px}
+.hero-meta .dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 14px var(--lime);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-meta .div{width:1px;height:14px;background:var(--border-strong)}
+.wordmark{font-family:var(--f-display);font-size:clamp(56px,10vw,148px);line-height:.82;letter-spacing:-.05em;text-transform:uppercase;margin-bottom:20px}
+.wordmark .slash{color:var(--lime);display:inline-block;transform:skewX(-12deg);margin:0 -.05em}
+.wordmark .race{font-style:italic}
+.tagline{font-size:clamp(18px,2vw,24px);color:var(--text-dim);max-width:700px;line-height:1.45;font-weight:400}
+.tagline b{color:var(--lime);font-weight:600}
+.hero-strip{display:flex;gap:40px;margin-top:32px;flex-wrap:wrap}
+.hero-stat{font-family:var(--f-mono);font-size:11px;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase}
+.hero-stat b{display:block;color:var(--text);font-family:var(--f-display);font-size:22px;font-weight:normal;letter-spacing:-.01em;text-transform:none;margin-top:6px}
+
+/* SCREENS GRID */
+.screens{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;align-items:start}
+@media(max-width:1400px){.screens{grid-template-columns:repeat(2,1fr);gap:56px}}
+@media(max-width:700px){.screens{grid-template-columns:1fr}}
+.phone-wrap{display:flex;flex-direction:column;align-items:center;gap:20px}
+
+/* PHONE FRAME */
+.phone{width:100%;max-width:368px;background:linear-gradient(180deg,#1a1a28 0%,#0d0d16 100%);border-radius:44px;border:1px solid var(--border-strong);padding:12px 10px;box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 48px 96px -24px rgba(0,0,0,.6),0 0 0 .5px rgba(255,255,255,.02);position:relative}
+.phone::before{content:'';position:absolute;top:24px;left:50%;transform:translateX(-50%);width:92px;height:26px;background:#000;border-radius:20px;z-index:10}
+.screen{background:#0a0a14;border-radius:32px;overflow:hidden;height:740px;display:flex;flex-direction:column;position:relative}
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:14px 28px 8px;font-family:var(--f-mono);font-size:13px;font-weight:700;letter-spacing:-.01em;position:relative;z-index:11}
+.sb-icons{display:flex;gap:5px;align-items:center;font-size:11px}
+.sb-icons .bat{width:22px;height:11px;border:1px solid currentColor;border-radius:3px;padding:1px;position:relative}
+.sb-icons .bat::after{content:'';display:block;width:70%;height:100%;background:currentColor;border-radius:1px}
+.sb-icons .bat::before{content:'';position:absolute;right:-3px;top:3px;width:2px;height:5px;background:currentColor;border-radius:0 1px 1px 0}
+.body{flex:1;overflow-y:auto;padding:4px 14px 92px;scrollbar-width:none}
+.body::-webkit-scrollbar{display:none}
+.appbar{display:flex;justify-content:space-between;align-items:center;padding:16px 4px 18px}
+.appname{font-family:var(--f-display);font-size:20px;letter-spacing:-.02em}
+.appname .x{color:var(--lime);transform:skewX(-12deg);display:inline-block}
+.iconbtn{width:34px;height:34px;border-radius:10px;background:var(--bg-card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer}
+
+/* === HOME === */
+.identity{background:linear-gradient(135deg,#6d28d9 0%,#ec4899 55%,#f97316 100%);border-radius:24px;padding:22px 20px 20px;position:relative;overflow:hidden;margin-bottom:14px}
+.identity::before{content:'';position:absolute;right:-60px;top:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%);border-radius:50%}
+.identity::after{content:'';position:absolute;left:-30px;bottom:-60px;width:140px;height:140px;background:radial-gradient(circle,rgba(255,255,255,.1),transparent 70%);border-radius:50%}
+.id-label{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;position:relative}
+.id-score{font-family:var(--f-display);font-size:72px;line-height:.9;letter-spacing:-.04em;margin:6px 0 2px;position:relative}
+.id-unit{font-family:var(--f-mono);font-size:11px;opacity:.75;letter-spacing:.1em;text-transform:uppercase;position:relative;margin-bottom:14px}
+.id-pill{display:inline-flex;align-items:center;gap:6px;background:#0a0a14;color:var(--lime);padding:7px 12px 7px 10px;border-radius:100px;font-family:var(--f-display);font-size:11px;letter-spacing:.08em;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.id-pill::before{content:'';width:5px;height:5px;background:var(--lime);border-radius:50%;box-shadow:0 0 8px var(--lime)}
+.id-rank{margin-top:14px;font-size:13px;line-height:1.45;opacity:.95;position:relative;font-weight:500}
+.id-rank b{font-family:var(--f-display);font-weight:normal}
+
+/* Streak */
+.streak{display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,rgba(255,107,53,.12) 0%,rgba(255,107,53,.04) 100%);border:1px solid rgba(255,107,53,.25);border-radius:16px;padding:12px 16px;margin-bottom:22px}
+.streak-flame{font-size:24px;filter:drop-shadow(0 0 8px rgba(255,107,53,.6))}
+.streak-mid{flex:1}
+.streak-count{font-family:var(--f-display);font-size:15px;letter-spacing:-.01em}
+.streak-count .num{color:var(--orange)}
+.streak-sub{font-family:var(--f-mono);font-size:10px;color:var(--text-dim);margin-top:3px;letter-spacing:.02em}
+.streak-dots{display:flex;gap:3px}
+.streak-dots span{width:6px;height:6px;border-radius:50%;background:var(--orange);box-shadow:0 0 4px rgba(255,107,53,.6)}
+.streak-dots span.off{background:var(--border);box-shadow:none}
+
+/* Sections */
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;margin:4px 2px 12px}
+.sec-title{font-family:var(--f-display);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.sec-sub{font-family:var(--f-mono);font-size:9px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.sec-link{font-family:var(--f-mono);font-size:10px;color:var(--lime);text-decoration:none;letter-spacing:.05em}
+
+/* Leaderboard rows */
+.lb{display:flex;flex-direction:column;gap:5px}
+.lb-row{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:9px 12px 9px 10px;transition:all .2s}
+.lb-row.me{border-color:rgba(212,255,61,.5);background:linear-gradient(90deg,rgba(212,255,61,.1),rgba(212,255,61,.02))}
+.lb-rank{font-family:var(--f-display);font-size:13px;width:22px;text-align:center;color:var(--text-dim)}
+.lb-rank.g{color:var(--gold)}
+.lb-rank.s{color:#d4d4dc}
+.lb-rank.b{color:#d97706}
+.lb-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:12px;flex-shrink:0}
+.lb-info{flex:1;min-width:0}
+.lb-name{font-size:13px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-title{font-family:var(--f-mono);font-size:9px;color:var(--violet);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.lb-right{text-align:right;flex-shrink:0}
+.lb-score{font-family:var(--f-display);font-size:14px;letter-spacing:-.01em}
+.lb-delta{font-family:var(--f-mono);font-size:10px;margin-top:2px;display:flex;align-items:center;gap:3px;justify-content:flex-end}
+.lb-delta.up{color:var(--green)}
+.lb-delta.down{color:var(--red)}
+.lb-delta.flat{color:var(--text-muted)}
+
+/* Avatars */
+.av1{background:linear-gradient(135deg,#ff3d8f,#a78bfa)}
+.av2{background:linear-gradient(135deg,#d4ff3d,#5eead4);color:#000}
+.av3{background:linear-gradient(135deg,#fbbf24,#ff6b35);color:#000}
+.av4{background:linear-gradient(135deg,#5eead4,#60a5fa);color:#000}
+.av5{background:linear-gradient(135deg,#a78bfa,#60a5fa)}
+.av6{background:linear-gradient(135deg,#ff6b35,#fbbf24);color:#000}
+.av7{background:linear-gradient(135deg,#4ade80,#5eead4);color:#000}
+
+/* Spotlight */
+.spot{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.spot-c{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:14px 12px;position:relative;overflow:hidden}
+.spot-c.wk{background:linear-gradient(135deg,#191926 0%,rgba(167,139,250,.18) 100%);border-color:rgba(167,139,250,.35)}
+.spot-c.mo{background:linear-gradient(135deg,#191926 0%,rgba(251,191,36,.18) 100%);border-color:rgba(251,191,36,.35)}
+.spot-ic{position:absolute;top:-4px;right:-4px;font-size:40px;opacity:.15;transform:rotate(12deg)}
+.spot-lab{font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);position:relative}
+.spot-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:11px;margin:8px 0 6px;position:relative}
+.spot-name{font-family:var(--f-display);font-size:13px;letter-spacing:-.01em;position:relative}
+.spot-sc{font-family:var(--f-mono);font-size:10px;color:var(--lime);margin-top:4px;position:relative;letter-spacing:.02em}
+.spot-c.mo .spot-sc{color:var(--gold)}
+
+/* Share */
+.share-row{display:grid;grid-template-columns:1.3fr 1fr;gap:8px;margin-top:14px}
+.sbtn{border:1px solid var(--border);border-radius:14px;padding:13px 10px;text-align:center;font-family:var(--f-display);font-size:10px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.sbtn.prim{background:var(--lime);color:#000;border-color:var(--lime)}
+.sbtn.sec{background:var(--bg-card);color:var(--text)}
+
+/* === LEADERBOARD === */
+.toggle{display:grid;grid-template-columns:1fr 1fr;background:var(--bg-card);border:1px solid var(--border);border-radius:100px;padding:3px;margin-bottom:14px}
+.toggle button{background:transparent;border:none;color:var(--text-dim);font-family:var(--f-display);font-size:11px;letter-spacing:.07em;padding:9px;border-radius:100px;cursor:pointer;transition:all .2s}
+.toggle button.active{background:var(--lime);color:#000}
+.tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:var(--f-mono);font-size:10px;letter-spacing:.05em;padding:6px 11px;border-radius:100px;cursor:pointer;white-space:nowrap;text-transform:uppercase}
+.tab.active{background:var(--text);color:var(--bg);border-color:var(--text);font-weight:700}
+.lb-row.big{padding:11px 12px}
+.lb-row.big .lb-av{width:38px;height:38px;font-size:13px}
+.sticky-me{position:sticky;bottom:88px;margin-top:12px;box-shadow:0 -20px 40px -10px rgba(0,0,0,.8);z-index:5}
+.crown{position:absolute;top:-8px;right:8px;font-size:16px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+.lb-row{position:relative}
+.flag{font-size:10px;margin-left:4px;opacity:.7}
+
+/* === ACHIEVEMENTS === */
+.titles-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
+.t-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:12px 8px 10px;text-align:center;position:relative;overflow:hidden}
+.t-card.act{background:linear-gradient(180deg,rgba(167,139,250,.2) 0%,var(--bg-card) 100%);border-color:rgba(167,139,250,.5)}
+.t-per{font-family:var(--f-mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim)}
+.t-ic{font-size:26px;margin:8px 0 6px;filter:drop-shadow(0 0 8px rgba(167,139,250,.3))}
+.t-nm{font-family:var(--f-display);font-size:10px;letter-spacing:-.01em;line-height:1.2}
+.t-sc{font-family:var(--f-mono);font-size:8px;color:var(--lime);margin-top:4px;letter-spacing:.04em}
+
+/* Milestones */
+.ml-list{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.ml{background:var(--bg-card);border:1px solid var(--border);border-radius:13px;padding:11px 13px;display:flex;align-items:center;gap:12px}
+.ml.lk{opacity:.45}
+.ml-b{width:38px;height:38px;border-radius:11px;background:var(--bg-elev);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid var(--border)}
+.ml.ok .ml-b{background:linear-gradient(135deg,var(--lime) 0%,var(--cyan) 100%);border-color:var(--lime);box-shadow:0 0 16px rgba(212,255,61,.3)}
+.ml-mid{flex:1;min-width:0}
+.ml-nm{font-family:var(--f-display);font-size:12px;letter-spacing:-.01em}
+.ml-sub{font-family:var(--f-mono);font-size:9px;color:var(--text-dim);margin-top:3px;letter-spacing:.02em}
+.ml-bar{width:100%;height:3px;background:var(--border);border-radius:100px;margin-top:6px;overflow:hidden}
+.ml-bar-in{height:100%;background:linear-gradient(90deg,var(--lime),var(--cyan));border-radius:100px}
+.ml-chk{width:22px;height:22px;border-radius:50%;background:var(--lime);color:#000;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0}
+
+/* Streaks row */
+.st-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:22px}
+.st-c{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center}
+.st-c.ok{background:linear-gradient(180deg,rgba(255,107,53,.18) 0%,var(--bg-card) 100%);border-color:rgba(255,107,53,.4)}
+.st-c.lk{opacity:.45}
+.st-ic{font-size:22px;margin-bottom:4px;filter:drop-shadow(0 0 6px rgba(255,107,53,.4))}
+.st-d{font-family:var(--f-display);font-size:11px;letter-spacing:-.01em}
+.st-l{font-family:var(--f-mono);font-size:8px;color:var(--text-dim);letter-spacing:.06em;margin-top:3px}
+
+/* Champion */
+.ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ch{background:var(--bg-card);border:1px solid var(--border);border-radius:13px;padding:14px 8px;text-align:center}
+.ch.ok{background:linear-gradient(180deg,rgba(251,191,36,.15) 0%,var(--bg-card) 100%);border-color:rgba(251,191,36,.45)}
+.ch.lk{opacity:.45}
+.ch-ic{font-size:26px;margin-bottom:6px;filter:drop-shadow(0 0 8px rgba(251,191,36,.4))}
+.ch-nm{font-family:var(--f-display);font-size:9px;line-height:1.2;letter-spacing:0}
+.ch-sub{font-family:var(--f-mono);font-size:8px;color:var(--text-dim);margin-top:4px;letter-spacing:.04em}
+
+/* === BATTLE === */
+.soon{background:linear-gradient(135deg,var(--bg-card) 0%,var(--bg-card-2) 100%);border:1px solid var(--border);border-radius:24px;padding:36px 24px 32px;text-align:center;margin:32px 0 22px;position:relative;overflow:hidden}
+.soon::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,61,143,.18),transparent 55%),radial-gradient(circle at 70% 80%,rgba(167,139,250,.18),transparent 55%)}
+.soon::after{content:'';position:absolute;top:-2px;left:-2px;right:-2px;bottom:-2px;border-radius:24px;padding:2px;background:linear-gradient(135deg,transparent,rgba(255,61,143,.3),transparent,rgba(167,139,250,.3),transparent);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.soon-lock{width:64px;height:64px;margin:0 auto 18px;background:rgba(0,0,0,.6);border:1px solid var(--border-strong);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;position:relative;z-index:1;backdrop-filter:blur(8px)}
+.soon-tag{font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;color:var(--pink);text-transform:uppercase;position:relative;z-index:1}
+.soon-title{font-family:var(--f-display);font-size:32px;margin:10px 0;letter-spacing:-.03em;position:relative;z-index:1;line-height:.95}
+.soon-title .amp{color:var(--lime);font-style:italic}
+.soon-sub{font-size:13px;color:var(--text-dim);position:relative;z-index:1;line-height:1.4;max-width:260px;margin:0 auto}
+
+.plans{display:flex;flex-direction:column;gap:8px;margin:20px 0 24px}
+.plan{display:flex;gap:12px;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:11px 13px}
+.plan-n{font-family:var(--f-mono);font-size:10px;color:var(--violet);letter-spacing:.05em;flex-shrink:0;padding-top:1px}
+.plan-t{font-size:12px;line-height:1.45;color:var(--text)}
+.plan-t b{font-family:var(--f-display);font-weight:normal;display:block;font-size:12px;margin-bottom:2px;letter-spacing:-.01em}
+.plan-t span{color:var(--text-dim)}
+
+.notify{width:100%;background:linear-gradient(90deg,var(--pink),var(--violet));color:#fff;border:none;border-radius:16px;padding:15px;font-family:var(--f-display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 24px rgba(255,61,143,.25)}
+
+/* === NAV === */
+.nav{position:absolute;bottom:10px;left:10px;right:10px;background:rgba(10,10,20,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:22px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.navb{background:transparent;border:none;color:var(--text-muted);padding:9px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--f-mono);font-size:9px;letter-spacing:.05em;cursor:pointer;transition:all .2s}
+.navb .ico{font-size:18px;line-height:1;height:20px;display:flex;align-items:center;justify-content:center}
+.navb.on{color:var(--lime);background:rgba(212,255,61,.08)}
+.navb.soon:not(.on) .ico{filter:grayscale(1);opacity:.6}
+
+/* CAPTION */
+.cap{text-align:center}
+.cap-num{font-family:var(--f-mono);font-size:11px;color:var(--text-muted);letter-spacing:.2em}
+.cap-name{font-family:var(--f-display);color:var(--text);font-size:16px;margin-top:6px;letter-spacing:.02em}
+.cap-desc{font-size:12px;color:var(--text-dim);margin:4px auto 0;max-width:300px;line-height:1.4}
+
+/* Footer */
+.foot{margin-top:120px;padding-top:40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.foot-l{font-family:var(--f-mono);font-size:11px;color:var(--text-muted);letter-spacing:.08em}
+.foot-l b{color:var(--text);font-family:var(--f-display);font-weight:normal;letter-spacing:.02em}
+.foot-r{display:flex;gap:20px;font-family:var(--f-mono);font-size:10px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-meta">
+      <span class="dot"></span>
+      <span>v1.0 · VISUAL SPEC</span>
+      <span class="div"></span>
+      <span>APR 2026</span>
+      <span class="div"></span>
+      <span>MOBILE · IOS / ANDROID</span>
+    </div>
+    <h1 class="wordmark">Reel<span class="slash">/</span><span class="race">Race</span></h1>
+    <p class="tagline">Turn your Instagram Reel habit into a blood sport. Track your scrolls, stack titles like <b>Reel Zombie</b> and <b>Scroll Demon</b>, and find out who&rsquo;s really the biggest screen addict in your squad.</p>
+    <div class="hero-strip">
+      <div class="hero-stat">Screens <b>4</b></div>
+      <div class="hero-stat">Title Ladder <b>5 Tiers</b></div>
+      <div class="hero-stat">Reset Cadence <b>Daily · Weekly · Monthly</b></div>
+      <div class="hero-stat">Auth Model <b>JWT + FCM/APNs</b></div>
+    </div>
+  </section>
+
+  <!-- SCREENS -->
+  <div class="screens">
+
+    <!-- ========== HOME ========== -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><div class="sb-icons"><span>●●●●</span><span>􀙇</span><div class="bat"></div></div></div>
+        <div class="body">
+          <div class="appbar">
+            <div class="appname">Reel<span class="x">/</span>Race</div>
+            <div class="iconbtn">🔔</div>
+          </div>
+
+          <!-- Identity -->
+          <div class="identity">
+            <div class="id-label">My Reel Scroll Score · Today</div>
+            <div class="id-score">482</div>
+            <div class="id-unit">Reels Scrolled</div>
+            <div class="id-pill">REEL ZOMBIE</div>
+            <div class="id-rank">You stand <b>3rd</b> among your squad of <b>12</b>. You are a certified <b>Reel Zombie</b>.</div>
+          </div>
+
+          <!-- Streak -->
+          <div class="streak">
+            <div class="streak-flame">🔥</div>
+            <div class="streak-mid">
+              <div class="streak-count"><span class="num">Day 7</span> Streak</div>
+              <div class="streak-sub">30-DAY MILESTONE IN 23 DAYS</div>
+            </div>
+            <div class="streak-dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+
+          <!-- Mini Leaderboard -->
+          <div class="sec-head">
+            <div>
+              <div class="sec-title">Squad Standings</div>
+              <div class="sec-sub">LIVE · UPDATES EVERY 30s</div>
+            </div>
+            <a class="sec-link" href="#">See all →</a>
+          </div>
+          <div class="lb">
+            <div class="lb-row">
+              <div class="lb-rank g">1</div>
+              <div class="lb-av av1">A</div>
+              <div class="lb-info"><div class="lb-name">Arnav</div><div class="lb-title">Scroll Demon</div></div>
+              <div class="lb-right"><div class="lb-score">942</div><div class="lb-delta flat">— —</div></div>
+            </div>
+            <div class="lb-row">
+              <div class="lb-rank s">2</div>
+              <div class="lb-av av2">P</div>
+              <div class="lb-info"><div class="lb-name">Priya</div><div class="lb-title">Scroll Demon</div></div>
+              <div class="lb-right"><div class="lb-score">711</div><div class="lb-delta up">▲ 1</div></div>
+            </div>
+            <div class="lb-row me">
+              <div class="lb-rank b">3</div>
+              <div class="lb-av av3">T</div>
+              <div class="lb-info"><div class="lb-name">You · Tushar</div><div class="lb-title">Reel Zombie</div></div>
+              <div class="lb-right"><div class="lb-score">482</div><div class="lb-delta down">▼ 1</div></div>
+            </div>
+            <div class="lb-row">
+              <div class="lb-rank">4</div>
+              <div class="lb-av av4">K</div>
+              <div class="lb-info"><div class="lb-name">Karan</div><div class="lb-title">Thumb Athlete</div></div>
+              <div class="lb-right"><div class="lb-score">388</div><div class="lb-delta up">▲ 2</div></div>
+            </div>
+            <div class="lb-row">
+              <div class="lb-rank">5</div>
+              <div class="lb-av av5">R</div>
+              <div class="lb-info"><div class="lb-name">Riya</div><div class="lb-title">Thumb Athlete</div></div>
+              <div class="lb-right"><div class="lb-score">302</div><div class="lb-delta flat">— —</div></div>
+            </div>
+          </div>
+
+          <!-- Spotlight -->
+          <div class="spot">
+            <div class="spot-c wk">
+              <div class="spot-ic">👑</div>
+              <div class="spot-lab">Scroller of the Week</div>
+              <div class="spot-av av1">A</div>
+              <div class="spot-name">Arnav</div>
+              <div class="spot-sc">5,812 reels</div>
+            </div>
+            <div class="spot-c mo">
+              <div class="spot-ic">🏆</div>
+              <div class="spot-lab">Scroll Legend</div>
+              <div class="spot-av av2">P</div>
+              <div class="spot-name">Priya</div>
+              <div class="spot-sc">24,110 reels</div>
+            </div>
+          </div>
+
+          <!-- Share -->
+          <div class="share-row">
+            <button class="sbtn prim">📸 Share Story Card</button>
+            <button class="sbtn sec">@ Tag Friend</button>
+          </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="nav">
+          <button class="navb on"><span class="ico">🏠</span>HOME</button>
+          <button class="navb"><span class="ico">📊</span>LEADERS</button>
+          <button class="navb"><span class="ico">🏆</span>TROPHIES</button>
+          <button class="navb soon"><span class="ico">⚔️</span>BATTLE</button>
+        </nav>
+      </div></div>
+      <div class="cap">
+        <div class="cap-num">01</div>
+        <div class="cap-name">HOME</div>
+        <div class="cap-desc">Score, rank, title — the daily-use hub.</div>
+      </div>
+    </div>
+
+    <!-- ========== LEADERBOARD ========== -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><div class="sb-icons"><span>●●●●</span><span>􀙇</span><div class="bat"></div></div></div>
+        <div class="body">
+          <div class="appbar">
+            <div class="appname">Leaderboard</div>
+            <div class="iconbtn">⚙️</div>
+          </div>
+
+          <div class="toggle">
+            <button class="active">👥 FRIENDS</button>
+            <button>🌍 GLOBAL</button>
+          </div>
+          <div class="tabs">
+            <button class="tab">Today</button>
+            <button class="tab active">This Week</button>
+            <button class="tab">This Month</button>
+            <button class="tab">All Time</button>
+          </div>
+
+          <div class="lb">
+            <div class="lb-row big">
+              <div class="crown">👑</div>
+              <div class="lb-rank g">1</div>
+              <div class="lb-av av1">A</div>
+              <div class="lb-info"><div class="lb-name">Arnav Desai</div><div class="lb-title">Scroll Legend</div></div>
+              <div class="lb-right"><div class="lb-score">5,812</div><div class="lb-delta flat">— —</div></div>
+            </div>
+            <div class="lb-row big">
+              <div class="lb-rank s">2</div>
+              <div class="lb-av av2">P</div>
+              <div class="lb-info"><div class="lb-name">Priya Menon</div><div class="lb-title">Scroll Demon</div></div>
+              <div class="lb-right"><div class="lb-score">4,201</div><div class="lb-delta up">▲ 2</div></div>
+            </div>
+            <div class="lb-row big">
+              <div class="lb-rank b">3</div>
+              <div class="lb-av av5">A</div>
+              <div class="lb-info"><div class="lb-name">Aditya Roy</div><div class="lb-title">Scroll Demon</div></div>
+              <div class="lb-right"><div class="lb-score">3,887</div><div class="lb-delta down">▼ 1</div></div>
+            </div>
+            <div class="lb-row big">
+              <div class="lb-rank">4</div>
+              <div class="lb-av av4">M</div>
+              <div class="lb-info"><div class="lb-name">Meera Kapoor</div><div class="lb-title">Reel Zombie</div></div>
+              <div class="lb-right"><div class="lb-score">2,945</div><div class="lb-delta flat">— —</div></div>
+            </div>
+            <div class="lb-row big">
+              <div class="lb-rank">5</div>
+              <div class="lb-av av6">I</div>
+              <div class="lb-info"><div class="lb-name">Ishaan Shah</div><div class="lb-title">Reel Zombie</div></div>
+              <div class="lb-right"><div class="lb-score">2,411</div><div class="lb-delta up">▲ 3</div></div>
+            </div>
+            <div class="lb-row big">
+              <div class="lb-rank">7</div>
+              <div class="lb-av av7">N</div>
+              <div class="lb-info"><div class="lb-name">Neha Banerjee</div><div class="lb-title">Thumb Athlete</div></div>
+              <div class="lb-right"><div class="lb-score">1,820</div><div class="lb-delta down">▼ 2</div></div>
+            </div>
+            <div class="lb-row big">
+              <div class="lb-rank">8</div>
+              <div class="lb-av av4">K</div>
+              <div class="lb-info"><div class="lb-name">Karan Vora</div><div class="lb-title">Thumb Athlete</div></div>
+              <div class="lb-right"><div class="lb-score">1,615</div><div class="lb-delta up">▲ 1</div></div>
+            </div>
+          </div>
+
+          <!-- My sticky row -->
+          <div class="lb-row big me sticky-me">
+            <div class="lb-rank b">6</div>
+            <div class="lb-av av3">T</div>
+            <div class="lb-info"><div class="lb-name">You · Tushar</div><div class="lb-title">Reel Zombie</div></div>
+            <div class="lb-right"><div class="lb-score">2,105</div><div class="lb-delta down">▼ 1</div></div>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <button class="navb"><span class="ico">🏠</span>HOME</button>
+          <button class="navb on"><span class="ico">📊</span>LEADERS</button>
+          <button class="navb"><span class="ico">🏆</span>TROPHIES</button>
+          <button class="navb soon"><span class="ico">⚔️</span>BATTLE</button>
+        </nav>
+      </div></div>
+      <div class="cap">
+        <div class="cap-num">02</div>
+        <div class="cap-name">LEADERBOARD</div>
+        <div class="cap-desc">Friends &amp; global, four time windows.</div>
+      </div>
+    </div>
+
+    <!-- ========== ACHIEVEMENTS ========== -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><div class="sb-icons"><span>●●●●</span><span>􀙇</span><div class="bat"></div></div></div>
+        <div class="body">
+          <div class="appbar">
+            <div class="appname">Trophies</div>
+            <div class="iconbtn">📸</div>
+          </div>
+
+          <!-- Active titles -->
+          <div class="sec-head">
+            <div>
+              <div class="sec-title">Active Titles</div>
+              <div class="sec-sub">RESETS BY PERIOD</div>
+            </div>
+          </div>
+          <div class="titles-3">
+            <div class="t-card act">
+              <div class="t-per">Daily</div>
+              <div class="t-ic">🧟</div>
+              <div class="t-nm">Reel Zombie</div>
+              <div class="t-sc">400–799</div>
+            </div>
+            <div class="t-card act">
+              <div class="t-per">Weekly</div>
+              <div class="t-ic">💪</div>
+              <div class="t-nm">Thumb Athlete</div>
+              <div class="t-sc">1.5k–3k</div>
+            </div>
+            <div class="t-card act">
+              <div class="t-per">Monthly</div>
+              <div class="t-ic">💪</div>
+              <div class="t-nm">Thumb Athlete</div>
+              <div class="t-sc">6k–12k</div>
+            </div>
+          </div>
+
+          <!-- Milestones -->
+          <div class="sec-head">
+            <div>
+              <div class="sec-title">Milestones</div>
+              <div class="sec-sub">3 / 6 UNLOCKED</div>
+            </div>
+          </div>
+          <div class="ml-list">
+            <div class="ml ok">
+              <div class="ml-b">🌱</div>
+              <div class="ml-mid"><div class="ml-nm">First Reel</div><div class="ml-sub">UNLOCKED · 14 FEB 2026</div></div>
+              <div class="ml-chk">✓</div>
+            </div>
+            <div class="ml ok">
+              <div class="ml-b">💯</div>
+              <div class="ml-mid"><div class="ml-nm">Thumb Apprentice</div><div class="ml-sub">100 REELS · UNLOCKED</div></div>
+              <div class="ml-chk">✓</div>
+            </div>
+            <div class="ml ok">
+              <div class="ml-b">🎯</div>
+              <div class="ml-mid"><div class="ml-nm">Scroll Adept</div><div class="ml-sub">500 REELS · UNLOCKED</div></div>
+              <div class="ml-chk">✓</div>
+            </div>
+            <div class="ml">
+              <div class="ml-b">⚡</div>
+              <div class="ml-mid">
+                <div class="ml-nm">Reel Centurion</div>
+                <div class="ml-sub">682 / 1,000 REELS</div>
+                <div class="ml-bar"><div class="ml-bar-in" style="width:68%"></div></div>
+              </div>
+            </div>
+            <div class="ml lk">
+              <div class="ml-b">🔥</div>
+              <div class="ml-mid"><div class="ml-nm">Scroll Veteran</div><div class="ml-sub">5,000 REELS · LOCKED</div></div>
+            </div>
+            <div class="ml lk">
+              <div class="ml-b">👑</div>
+              <div class="ml-mid"><div class="ml-nm">Thumb God</div><div class="ml-sub">10,000 REELS · LOCKED</div></div>
+            </div>
+          </div>
+
+          <!-- Streaks -->
+          <div class="sec-head">
+            <div>
+              <div class="sec-title">Streaks</div>
+              <div class="sec-sub">2 / 4 UNLOCKED</div>
+            </div>
+          </div>
+          <div class="st-grid">
+            <div class="st-c ok"><div class="st-ic">🔥</div><div class="st-d">3 Days</div><div class="st-l">UNLOCKED</div></div>
+            <div class="st-c ok"><div class="st-ic">🔥</div><div class="st-d">7 Days</div><div class="st-l">UNLOCKED</div></div>
+            <div class="st-c"><div class="st-ic">🔥</div><div class="st-d">30 Days</div><div class="st-l">7 / 30</div></div>
+            <div class="st-c lk"><div class="st-ic">🔥</div><div class="st-d">100 Days</div><div class="st-l">LOCKED</div></div>
+          </div>
+
+          <!-- Champion -->
+          <div class="sec-head">
+            <div>
+              <div class="sec-title">Champion Badges</div>
+              <div class="sec-sub">PERMANENT · PRESTIGE</div>
+            </div>
+          </div>
+          <div class="ch-grid">
+            <div class="ch ok"><div class="ch-ic">👑</div><div class="ch-nm">Scroller of the Week</div><div class="ch-sub">×2 WINS</div></div>
+            <div class="ch lk"><div class="ch-ic">🏆</div><div class="ch-nm">Scroll Legend of Month</div><div class="ch-sub">LOCKED</div></div>
+            <div class="ch ok"><div class="ch-ic">🥇</div><div class="ch-nm">#1 Among Friends</div><div class="ch-sub">×5 DAYS</div></div>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <button class="navb"><span class="ico">🏠</span>HOME</button>
+          <button class="navb"><span class="ico">📊</span>LEADERS</button>
+          <button class="navb on"><span class="ico">🏆</span>TROPHIES</button>
+          <button class="navb soon"><span class="ico">⚔️</span>BATTLE</button>
+        </nav>
+      </div></div>
+      <div class="cap">
+        <div class="cap-num">03</div>
+        <div class="cap-name">ACHIEVEMENTS</div>
+        <div class="cap-desc">Titles, milestones, streaks, champions.</div>
+      </div>
+    </div>
+
+    <!-- ========== BATTLE ========== -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><div class="sb-icons"><span>●●●●</span><span>􀙇</span><div class="bat"></div></div></div>
+        <div class="body">
+          <div class="appbar">
+            <div class="appname">Battle</div>
+            <div class="iconbtn">❓</div>
+          </div>
+
+          <div class="soon">
+            <div class="soon-lock">🔒</div>
+            <div class="soon-tag">Coming Soon · Beta Q3</div>
+            <div class="soon-title">Squad <span class="amp">vs</span> Squad</div>
+            <div class="soon-sub">Assemble a crew. Pick a window. Combine your scrolls and crush another squad.</div>
+          </div>
+
+          <div class="sec-head">
+            <div>
+              <div class="sec-title">What&rsquo;s Planned</div>
+              <div class="sec-sub">MECHANICS · PRELIMINARY</div>
+            </div>
+          </div>
+          <div class="plans">
+            <div class="plan">
+              <div class="plan-n">01</div>
+              <div class="plan-t"><b>Create or Join a Squad</b><span>Named groups with a shareable join code. Owners can kick, rename, set avatars.</span></div>
+            </div>
+            <div class="plan">
+              <div class="plan-n">02</div>
+              <div class="plan-t"><b>Pick a Battle Window</b><span>Quick 24-hour skirmishes or week-long campaigns. Choose your poison.</span></div>
+            </div>
+            <div class="plan">
+              <div class="plan-n">03</div>
+              <div class="plan-t"><b>Combine &amp; Compete</b><span>Squad score = sum of every member&rsquo;s Reel Scroll Score. See live contributions.</span></div>
+            </div>
+            <div class="plan">
+              <div class="plan-n">04</div>
+              <div class="plan-t"><b>Win the Battle Badge</b><span>The victorious squad gets a permanent battle-won badge. Losers get bragging rights to earn back.</span></div>
+            </div>
+          </div>
+
+          <button class="notify">🔔 Notify Me When It&rsquo;s Live</button>
+        </div>
+
+        <nav class="nav">
+          <button class="navb"><span class="ico">🏠</span>HOME</button>
+          <button class="navb"><span class="ico">📊</span>LEADERS</button>
+          <button class="navb"><span class="ico">🏆</span>TROPHIES</button>
+          <button class="navb on soon"><span class="ico">⚔️</span>BATTLE</button>
+        </nav>
+      </div></div>
+      <div class="cap">
+        <div class="cap-num">04</div>
+        <div class="cap-name">BATTLE</div>
+        <div class="cap-desc">Squad vs squad — launching post-beta.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+    <div class="foot-l"><b>ReelRace</b> · VISUAL SPEC / APR 2026</div>
+    <div class="foot-r">
+      <span>NestJS + POSTGRES</span>
+      <span>EXPO · REACT NATIVE</span>
+      <span>SOCKET.IO LIVE</span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
