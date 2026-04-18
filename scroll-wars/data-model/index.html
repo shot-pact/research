@@ -272,7 +272,6 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
           <div class="col"><span></span><span class="col-name">instagram_handle</span><span class="col-type">text</span></div>
           <div class="col"><span class="col-key un">★</span><span class="col-name">email</span><span class="col-type">text · nullable</span></div>
           <div class="col"><span></span><span class="col-name">display_name</span><span class="col-type">text</span></div>
-          <div class="col"><span></span><span class="col-name">avatar_url</span><span class="col-type">text · R2 · nullable</span></div>
           <div class="col"><span></span><span class="col-name">country_code</span><span class="col-type">char(2)</span></div>
           <div class="col"><span></span><span class="col-name">platform</span><span class="col-type"><span class="enum">'ios' | 'android'</span></span></div>
           <div class="col"><span class="col-key ix">⚡</span><span class="col-name">timezone</span><span class="col-type">text</span></div>
@@ -289,7 +288,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
           <div class="constraint unique"><span class="tag">UNIQUE</span>instagram_id · username · email (when present)</div>
           <div class="constraint index"><span class="tag">INDEX</span>last_active_at DESC (for "active friends" queries)</div>
           <div class="constraint note"><span class="tag">DENORM</span>lifetime_reels, current_streak, last_scroll_date all maintained in the scroll-sync txn — never recomputed on read</div>
-          <div class="constraint note"><span class="tag">AVATAR</span>User-uploaded to R2 via presigned PUT. On replace, old key queued for deletion — no row-level history kept.</div>
+          <div class="constraint note"><span class="tag">AVATAR</span>No stored column — profile pic served live from the Graph API, URL cached in Redis ~12h per user. Always tracks the user's current IG avatar.</div>
         </div>
       </div>
 
@@ -535,7 +534,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
   <!-- API SURFACE -->
   <section class="api">
     <h2>API <span class="hl">Surface</span></h2>
-    <div class="api-head-sub">REST + WEBSOCKET · FACEBOOK LOGIN + JWT · 29 REST ENDPOINTS · 1 WS CHANNEL · 🔓 PUBLIC · 🔒 AUTH</div>
+    <div class="api-head-sub">REST + WEBSOCKET · FACEBOOK LOGIN + JWT · 27 REST ENDPOINTS · 1 WS CHANNEL · 🔓 PUBLIC · 🔒 AUTH</div>
 
     <div class="api-grid">
 
@@ -553,7 +552,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
           <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/auth/logout</span><span class="api-auth">🔒</span></div>
         </div>
         <div class="api-card-foot">
-          <div class="api-ev">First-time login auto-creates <span class="ev">users</span> row from the linked IG account: <span class="ev">username</span> seeded from IG handle (collision-suffixed), <span class="ev">avatar_url</span> pulled from IG, editable after.</div>
+          <div class="api-ev">First-time login auto-creates <span class="ev">users</span> row from the linked IG account: <span class="ev">username</span> seeded from IG handle (collision-suffixed). Profile pic is served live from IG — never stored in our DB.</div>
           <div class="api-ev" style="margin-top:6px;color:var(--text-muted)">Requires IG account linked to a Facebook page — enforced at callback; unlinked users see an explainer screen.</div>
         </div>
       </div>
@@ -563,17 +562,12 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
         <div class="api-card-accent"></div>
         <div class="api-card-head">
           <div class="api-card-name"><span class="acc">▸</span>Me</div>
-          <div class="api-card-desc">Current user profile, settings, avatar. Returns computed title + live rank.</div>
+          <div class="api-card-desc">Current user profile + settings. Response includes computed title, live rank, and the IG-sourced avatar URL — fetched from Graph API, cached ~12h in Redis.</div>
         </div>
         <div class="api-list">
           <div class="api-row"><span class="api-m get">GET</span><span class="api-path">/me</span><span class="api-auth">🔒</span></div>
           <div class="api-row"><span class="api-m patch">PATCH</span><span class="api-path">/me</span><span class="api-auth">🔒</span></div>
-          <div class="api-row"><span class="api-m post">POST</span><span class="api-path">/me/avatar-upload-url</span><span class="api-auth">🔒</span></div>
-          <div class="api-row"><span class="api-m patch">PATCH</span><span class="api-path">/me/avatar</span><span class="api-auth">🔒</span></div>
           <div class="api-row"><span class="api-m del">DELETE</span><span class="api-path">/me</span><span class="api-auth">🔒</span></div>
-        </div>
-        <div class="api-card-foot">
-          <div class="api-ev">Avatar upload: presigned PUT → client uploads to R2 → PATCH /me/avatar confirms key</div>
         </div>
       </div>
 
@@ -737,7 +731,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
           <div class="infra-c-n">Object Storage</div>
           <div class="infra-c-role">Blobs</div>
         </div>
-        <div class="infra-c-d">User avatars + generated share cards. Direct-to-R2 uploads via presigned PUT — no binary bytes through the API.</div>
+        <div class="infra-c-d">Generated share cards only. Avatars are served live from IG's CDN, so R2 holds just satori-rendered PNGs — no user upload path.</div>
         <div class="infra-c-prov"><span class="lab">HOST</span><span class="val">Cloudflare R2</span></div>
       </div>
 
