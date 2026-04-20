@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReplyDaddy · Multi-Platform Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F2EDE4;
+  --paper:#FAF7F2;
+  --ink:#1A1612;
+  --ink2:#5C5650;
+  --ink3:#A09890;
+  --acc:#C8462A;
+  --acc2:#2A5C8A;
+  --grn:#1A5C3A;
+  --grn2:#2E8A5C;
+  --amb:#8A5A10;
+  --gold:#D4A847;
+  --bdr:rgba(26,22,18,.1);
+  --bdr2:rgba(26,22,18,.2)
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Geist',sans-serif;
+  font-size:13px;
+  line-height:1.65;
+  padding:48px 56px 80px;
+  min-height:100vh;
+  max-width:1280px;
+  margin:0 auto;
+}
+
+/* ---- HEADER ---- */
+.header{margin-bottom:40px}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10px;font-weight:400;text-transform:uppercase;letter-spacing:.18em;color:var(--ink3);margin-bottom:12px}
+h1{font-family:'Instrument Serif',serif;font-size:54px;font-weight:400;line-height:1;letter-spacing:-1.5px;margin-bottom:10px}
+h1 em{color:var(--acc);font-style:italic}
+.tagline{font-size:14px;color:var(--ink2);max-width:720px}
+
+/* ---- SECTION ---- */
+.section{margin-top:48px}
+.section-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.section-num{
+  font-family:'DM Mono',monospace;font-size:10px;font-weight:500;
+  text-transform:uppercase;letter-spacing:.14em;
+  padding:4px 10px;border-radius:4px;background:var(--ink);color:#FAF7F2;
+}
+h2{font-family:'Instrument Serif',serif;font-size:30px;font-weight:400;letter-spacing:-.5px;line-height:1.1}
+h3{font-family:'Geist',sans-serif;font-size:15px;font-weight:600;margin:20px 0 8px;letter-spacing:-.2px}
+h4{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--ink3);margin:16px 0 6px}
+
+p{color:var(--ink2);margin-bottom:10px;max-width:820px}
+p strong{color:var(--ink);font-weight:600}
+.lead{font-size:14px;color:var(--ink);max-width:820px}
+
+/* ---- CARDS ---- */
+.panel{background:var(--paper);border:0.5px solid var(--bdr2);border-radius:10px;padding:20px 24px;margin-bottom:12px}
+.panel.accent-grn{border-left:3px solid var(--grn)}
+.panel.accent-acc{border-left:3px solid var(--acc)}
+.panel.accent-acc2{border-left:3px solid var(--acc2)}
+.panel.accent-amb{border-left:3px solid var(--amb)}
+.panel.dark{background:var(--ink);color:#FAF7F2}
+.panel.dark p{color:rgba(250,247,242,.75)}
+.panel.dark strong{color:var(--gold)}
+.panel.dark h3{color:#FAF7F2}
+.panel.dark h4{color:rgba(250,247,242,.5)}
+
+/* ---- ARCHITECTURE DIAGRAM ---- */
+.arch{
+  background:var(--ink);border-radius:10px;padding:28px;margin:16px 0;
+  font-family:'Geist Mono',monospace;font-size:11px;line-height:1.75;
+  color:rgba(250,247,242,.82);
+  white-space:pre;overflow-x:auto;
+}
+
+/* ---- TABLES ---- */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:0.5px solid var(--bdr)}
+th{font-family:'DM Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);font-weight:500;background:rgba(26,22,18,.02)}
+td{color:var(--ink2)}
+td strong{color:var(--ink)}
+td.mono{font-family:'Geist Mono',monospace;font-size:11.5px;color:var(--ink)}
+td.ok{color:var(--grn2);font-weight:500}
+td.warn{color:var(--acc);font-weight:500}
+td.meh{color:var(--amb);font-weight:500}
+
+/* ---- CODE ---- */
+pre{
+  background:var(--ink);color:#FAF7F2;
+  padding:18px 22px;border-radius:10px;
+  font-family:'Geist Mono',monospace;font-size:11.5px;line-height:1.7;
+  overflow-x:auto;margin:12px 0;
+}
+pre .kw{color:#E0B26F}
+pre .str{color:#8FBC8F}
+pre .com{color:#7A7A7A;font-style:italic}
+pre .tbl{color:#D4A847;font-weight:500}
+
+/* ---- 2-COL ---- */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+
+/* ---- PILLS / LABELS ---- */
+.pill{display:inline-block;font-family:'DM Mono',monospace;font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;padding:3px 9px;border-radius:4px;margin-right:5px;margin-bottom:4px}
+.p-reddit{background:rgba(200,70,42,.1);color:var(--acc);border:0.5px solid rgba(200,70,42,.25)}
+.p-x{background:rgba(26,22,18,.08);color:var(--ink);border:0.5px solid var(--bdr2)}
+.p-li{background:rgba(42,92,138,.1);color:var(--acc2);border:0.5px solid rgba(42,92,138,.25)}
+.p-ai{background:rgba(212,168,71,.14);color:var(--amb);border:0.5px solid rgba(212,168,71,.3)}
+.p-ok{background:rgba(26,92,58,.1);color:var(--grn);border:0.5px solid rgba(26,92,58,.25)}
+.p-risk{background:rgba(139,32,32,.12);color:#8B2020;border:0.5px solid rgba(139,32,32,.2)}
+
+/* ---- QUOTE BLOCK ---- */
+.quote{font-family:'Instrument Serif',serif;font-size:15px;font-style:italic;color:var(--ink2);border-left:2px solid var(--bdr2);padding:6px 0 6px 14px;margin:14px 0;line-height:1.55}
+
+/* ---- COST STRIP ---- */
+.cost-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.cost-cell{background:var(--paper);border:0.5px solid var(--bdr2);border-radius:8px;padding:14px 16px}
+.cost-n{font-family:'Instrument Serif',serif;font-size:28px;line-height:1;color:var(--ink)}
+.cost-l{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);margin-top:4px}
+.cost-sub{font-size:11px;color:var(--ink2);margin-top:4px}
+
+ul{margin:8px 0 12px 20px}
+ul li{margin-bottom:5px;color:var(--ink2);max-width:820px}
+ul li strong{color:var(--ink)}
+
+hr{border:none;border-top:0.5px solid var(--bdr2);margin:12px 0}
+
+.back-link{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--acc2);text-decoration:none;margin-bottom:24px}
+.back-link:hover{color:var(--acc)}
+</style>
+</head>
+<body>
+
+<a href="../index.html" class="back-link">← Ideas index</a>
+
+<div class="header">
+  <div class="eyebrow">Design Doc · April 2026 · Idea: ReplyDaddy Multi-Platform</div>
+  <h1>Multi-platform <em>social reply</em> co-pilot</h1>
+  <p class="tagline">Expanding ReplyDaddy from Reddit-only to Reddit + X + LinkedIn. Infrastructure, data model, AI pipeline, and unit economics for the extension.</p>
+</div>
+
+<!-- ===== SCOPE ===== -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">01 · Scope</span>
+    <h2>What we're building and what we're not</h2>
+  </div>
+
+  <div class="panel accent-grn">
+    <h4>In scope</h4>
+    <ul>
+      <li><strong>Discovery</strong>: monitor Reddit subreddits, X lists/keywords, and LinkedIn hashtags/companies for posts matching project keywords + intent.</li>
+      <li><strong>Relevance ranking</strong>: embeddings + LLM rerank to surface only genuinely-engageable posts.</li>
+      <li><strong>Reply generation</strong>: Claude-powered drafts in the user's brand voice, per-platform tone.</li>
+      <li><strong>Posting</strong>: Reddit API and LinkedIn API for publishing; Chrome extension for LinkedIn engagement (comments/reactions) and X engagement fallback when API is rate-limited.</li>
+      <li><strong>Multi-tenant projects</strong>: agencies can manage 5–20 client projects; solopreneurs get one.</li>
+      <li><strong>Usage metering</strong>: credit-based per action; soft caps per tier.</li>
+    </ul>
+  </div>
+
+  <div class="panel accent-acc">
+    <h4>Out of scope</h4>
+    <ul>
+      <li>Instagram, TikTok, Facebook Groups — no viable API path without TOS violation.</li>
+      <li>DM automation on any platform — legal grey zone and high ban risk.</li>
+      <li>Connection-request automation on LinkedIn (separate product category, high risk).</li>
+      <li>Fully autonomous replies without user approval. Users always confirm before a post ships.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== ARCHITECTURE ===== -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">02 · High-level architecture</span>
+    <h2>System topology</h2>
+  </div>
+
+  <p>Three concerns separated: <strong>platform adapters</strong> (any I/O with Reddit/X/LinkedIn), the <strong>AI pipeline</strong> (embeddings, rerank, generation), and the <strong>application core</strong> (projects, users, billing, dashboard). Each platform is an isolated module so an API change on one doesn't ripple.</p>
+
+<div class="arch">┌─────────────────────────────────────────────────────────────────────┐
+│                        Browser · Next.js dashboard                   │
+│   Project setup · Inbox · Drafts · Scheduling · Analytics · Billing  │
+└──────────┬───────────────────────────────────────┬──────────────────┘
+           │ HTTPS                                  │ WebSocket
+           ▼                                        ▼
+┌─────────────────────────────────┐   ┌─────────────────────────────┐
+│  API · Next.js Route Handlers   │   │ LinkedIn Chrome Extension   │
+│  + Hono edge workers for OAuth  │   │ (runs in user's LI session) │
+└──────────┬──────────────────────┘   └────────────┬────────────────┘
+           │                                        │ engagement events
+           ▼                                        ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Job Queue · BullMQ on Redis                       │
+│  discover │ embed │ rerank │ draft │ schedule │ publish │ meter     │
+└──────────┬──────────────────────────────────────────────────────────┘
+           │
+  ┌────────┼────────────┬────────────────┬────────────────────────────┐
+  ▼        ▼            ▼                ▼                            ▼
+┌──────┐ ┌──────┐   ┌────────┐   ┌────────────────┐        ┌───────────────┐
+│Reddit│ │X/Twtr│   │LinkedIn│   │    AI layer    │        │  Billing /    │
+│adptr │ │adptr │   │ adptr  │   │ embeddings +   │        │  Stripe       │
+│(OAuth│ │(API +│   │(API for│   │ Claude Haiku + │        │  metering     │
+│ API) │ │Apify)│   │publish,│   │ Sonnet premium │        │               │
+│      │ │      │   │ext for │   │ + pgvector rag │        │               │
+│      │ │      │   │engage) │   │                │        │               │
+└──┬───┘ └──┬───┘   └────┬───┘   └────────┬───────┘        └──────┬────────┘
+   │        │            │                 │                       │
+   └────────┴────────────┴─────────────────┴───────────────────────┘
+                              │
+                              ▼
+       ┌──────────────────────────────────────────────────┐
+       │  Postgres (Supabase) · pgvector · S3/R2 · Redis  │
+       └──────────────────────────────────────────────────┘</div>
+
+  <h3>Why this shape</h3>
+  <ul>
+    <li><strong>Workers, not request handlers, do the expensive work.</strong> A discovery run pulls 500 posts, embeds them, reranks, and stores candidates — this can't block an HTTP request. BullMQ on Redis is boring and reliable; Temporal/inngest are fine alternatives.</li>
+    <li><strong>Postgres + pgvector is the right first choice</strong> for everything except when you cross ~20M vectors. Do not start with Pinecone; you will burn $500/mo for nothing at early scale.</li>
+    <li><strong>Chrome extension talks to backend over WebSocket</strong>, not just HTTPS, so the dashboard can tell the extension "go reply to candidate_post_id=123" in real time and get confirmation back.</li>
+  </ul>
+</div>
+
+<!-- ===== PLATFORM ADAPTERS ===== -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">03 · Platform adapters</span>
+    <h2>Per-platform realities</h2>
+  </div>
+
+  <!-- Reddit -->
+  <div class="panel accent-acc">
+    <span class="pill p-reddit">Reddit</span>
+    <span class="pill p-ok">Easiest</span>
+    <h3>Reddit adapter</h3>
+    <p><strong>Read:</strong> OAuth with <code>read</code> scope, poll subreddit <code>/new</code> listings every 5–15 min. Free tier is 100 QPM per OAuth client; enough for hundreds of projects with per-project scheduling. Paid Reddit API ($0.24/1k calls) only needed at real scale.</p>
+    <p><strong>Write:</strong> <code>submit</code> and <code>edit</code> scopes post comments/replies on behalf of the user. Must respect per-subreddit rules and rate limits (1 comment / 10 min per account is the safe default).</p>
+    <p><strong>Risk:</strong> Reddit changed API pricing overnight in 2023 and killed Apollo. Treat all Reddit revenue as "API-pricing-exposed" and stash 20% of margin for that day.</p>
+    <h4>Key endpoints</h4>
+    <table>
+      <thead><tr><th>Use</th><th>Endpoint</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Monitor new posts</td><td class="mono">GET /r/{sub}/new</td><td>Poll per project, diff on fullname</td></tr>
+        <tr><td>Fetch post context</td><td class="mono">GET /comments/{id}</td><td>For rerank + reply context</td></tr>
+        <tr><td>Post comment</td><td class="mono">POST /api/comment</td><td>Need <code>submit</code> scope</td></tr>
+        <tr><td>Check account health</td><td class="mono">GET /api/v1/me</td><td>Detect shadowbans / karma drops</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- X -->
+  <div class="panel">
+    <span class="pill p-x">X / Twitter</span>
+    <span class="pill p-risk">Expensive API</span>
+    <h3>X adapter</h3>
+    <p><strong>The trap:</strong> X API pricing post-Musk is brutal. Basic is $200/mo for 10K reads, Pro is $5,000/mo for 1M reads. A single scan pulling 500 tweets × 60 scans/month × 100 users = 3M reads, blowing past Pro.</p>
+    <p><strong>Realistic hybrid:</strong> Use X API for user's own account (OAuth read + write their timeline, reply to specific tweet IDs). Use <strong>Apify's X scraper</strong> ($50–200/mo flat) for discovery/monitoring — much cheaper per-read, tolerates being slower.</p>
+    <p><strong>Write path:</strong> Must use official API (scrapers can't post). OAuth 2.0 with <code>tweet.write</code> scope. Respect 300 tweets / 3-hour window per user.</p>
+    <h4>Hybrid cost math</h4>
+    <table>
+      <thead><tr><th>Component</th><th>Source</th><th>Cost at 500 users</th></tr></thead>
+      <tbody>
+        <tr><td>Discovery (read tweets)</td><td>Apify shared scraper</td><td class="ok">$150/mo</td></tr>
+        <tr><td>Reply posting</td><td>Per-user OAuth, Basic tier</td><td class="meh">$200/mo</td></tr>
+        <tr><td>User timeline sync</td><td>Per-user OAuth</td><td class="ok">Within Basic quota</td></tr>
+        <tr><td class="mono"><strong>Total</strong></td><td></td><td class="ok"><strong>~$0.70/user/mo</strong></td></tr>
+      </tbody>
+    </table>
+    <p><strong>Risk:</strong> Apify scrapers break whenever X changes DOM. Keep a second scraper provider on standby.</p>
+  </div>
+
+  <!-- LinkedIn -->
+  <div class="panel accent-acc2">
+    <span class="pill p-li">LinkedIn</span>
+    <span class="pill p-risk">Hardest</span>
+    <span class="pill p-ok">Highest ARPU</span>
+    <h3>LinkedIn adapter · hybrid API + Chrome extension</h3>
+    <p><strong>Split the product into two paths</strong> — this is the single most important architectural decision for LinkedIn.</p>
+    <div class="two-col">
+      <div class="panel accent-grn" style="margin:0">
+        <h4>Publishing path (like Buffer)</h4>
+        <p>Official LinkedIn Posts API. OAuth with <code>w_member_social</code> (personal) or <code>w_organization_social</code> (company pages). Fully sanctioned. Used for scheduled posts, article shares.</p>
+        <p>Apply to LinkedIn Marketing Developer Platform to get elevated quotas; partner status helps but isn't required for launch.</p>
+      </div>
+      <div class="panel accent-acc" style="margin:0">
+        <h4>Engagement path (like Taplio)</h4>
+        <p>Chrome extension injected into <code>linkedin.com</code>. Reads the user's feed via DOM, sends post candidates to backend over WebSocket. User clicks "reply" in the ReplyDaddy dashboard → extension fills the comment box → user confirms.</p>
+        <p><strong>No API exists for this.</strong> Competitors all do it this way.</p>
+      </div>
+    </div>
+    <h4>Chrome extension · architecture</h4>
+    <div class="arch">Content script (DOM) ──► Background script ──► WebSocket to backend
+                 ▲                                               │
+                 │                                               ▼
+                 └── receives "reply to post X" command ◄── ReplyDaddy server
+                          │
+                          ▼
+             Content script injects reply text
+             User sees it, clicks send manually (or timed auto-send)</div>
+    <h4>Critical safety rules (burned into the extension)</h4>
+    <ul>
+      <li>Max 25–40 actions per user per day, randomized.</li>
+      <li>Wait 30–180s between actions, with variance.</li>
+      <li>No activity outside user's typical waking hours (detected from past session times).</li>
+      <li>Stop immediately if LinkedIn shows a captcha, rate-limit page, or "unusual activity" warning.</li>
+      <li>Never two ReplyDaddy users sharing an IP without proxy rotation.</li>
+    </ul>
+    <p><strong>Risk:</strong> LinkedIn DOM changes break the extension every 6–10 weeks. Budget one engineer-week per quarter for maintenance. Users WILL get accounts restricted — have a clear incident-response doc and blame-shifting support policy, or you'll drown in tickets.</p>
+  </div>
+</div>
+
+<!-- ===== DATA MODEL ===== -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">04 · Data model</span>
+    <h2>Schema</h2>
+  </div>
+
+  <p>Postgres as the source of truth. <code>pgvector</code> extension for embeddings. Tables are multi-tenant via <code>org_id</code> — everything cascades from an organization down.</p>
+
+  <h3>Core tenant tables</h3>
+<pre><span class="com">-- Organizations: the billing unit. Solopreneur = 1 user, agency = many</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">organizations</span> (
+  id            uuid <span class="kw">PRIMARY KEY</span>,
+  name          text <span class="kw">NOT NULL</span>,
+  plan          text <span class="kw">NOT NULL</span>, <span class="com">-- 'solopreneur' | 'growing' | 'agency' | 'enterprise'</span>
+  stripe_customer_id text,
+  created_at    timestamptz <span class="kw">DEFAULT</span> now()
+);
+
+<span class="kw">CREATE TABLE</span> <span class="tbl">users</span> (
+  id            uuid <span class="kw">PRIMARY KEY</span>,
+  email         citext <span class="kw">UNIQUE NOT NULL</span>,
+  name          text,
+  created_at    timestamptz <span class="kw">DEFAULT</span> now()
+);
+
+<span class="kw">CREATE TABLE</span> <span class="tbl">org_members</span> (
+  org_id        uuid <span class="kw">REFERENCES</span> organizations(id) <span class="kw">ON DELETE CASCADE</span>,
+  user_id       uuid <span class="kw">REFERENCES</span> users(id) <span class="kw">ON DELETE CASCADE</span>,
+  role          text <span class="kw">NOT NULL</span>, <span class="com">-- 'owner' | 'admin' | 'member'</span>
+  <span class="kw">PRIMARY KEY</span> (org_id, user_id)
+);
+
+<span class="com">-- A project = one brand being promoted. Agencies have many.</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">projects</span> (
+  id            uuid <span class="kw">PRIMARY KEY</span>,
+  org_id        uuid <span class="kw">REFERENCES</span> organizations(id) <span class="kw">ON DELETE CASCADE</span>,
+  name          text <span class="kw">NOT NULL</span>,
+  brand_voice   text, <span class="com">-- prompt fragment describing the voice</span>
+  target_icp    text, <span class="com">-- "SaaS founders, 20-50 employees, hate tool fatigue"</span>
+  website_url   text,
+  product_desc  text, <span class="com">-- used in system prompt for all generation</span>
+  created_at    timestamptz <span class="kw">DEFAULT</span> now()
+);</pre>
+
+  <h3>Platform accounts &amp; targets</h3>
+<pre><span class="com">-- One row per connected social account. Tokens encrypted at rest.</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">platform_accounts</span> (
+  id            uuid <span class="kw">PRIMARY KEY</span>,
+  project_id    uuid <span class="kw">REFERENCES</span> projects(id) <span class="kw">ON DELETE CASCADE</span>,
+  platform      text <span class="kw">NOT NULL</span>, <span class="com">-- 'reddit' | 'x' | 'linkedin'</span>
+  external_id   text <span class="kw">NOT NULL</span>, <span class="com">-- u/username, @handle, linkedin URN</span>
+  access_token  text <span class="kw">NOT NULL</span>, <span class="com">-- encrypted</span>
+  refresh_token text,
+  expires_at    timestamptz,
+  scopes        text[],
+  status        text <span class="kw">DEFAULT</span> <span class="str">'active'</span>, <span class="com">-- 'active' | 'restricted' | 'revoked'</span>
+  health_meta   jsonb, <span class="com">-- karma, followers, last-scan-ok, warnings seen</span>
+  <span class="kw">UNIQUE</span> (project_id, platform, external_id)
+);
+
+<span class="com">-- What we watch. Unified shape across platforms.</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">targets</span> (
+  id            uuid <span class="kw">PRIMARY KEY</span>,
+  project_id    uuid <span class="kw">REFERENCES</span> projects(id) <span class="kw">ON DELETE CASCADE</span>,
+  platform      text <span class="kw">NOT NULL</span>,
+  target_type   text <span class="kw">NOT NULL</span>, <span class="com">-- 'subreddit' | 'hashtag' | 'handle' | 'list' | 'company' | 'keyword'</span>
+  value         text <span class="kw">NOT NULL</span>, <span class="com">-- 'r/SaaS', '#buildinpublic', '@levelsio', etc.</span>
+  priority      int <span class="kw">DEFAULT</span> 50, <span class="com">-- 0-100, affects scan frequency</span>
+  is_exclude    boolean <span class="kw">DEFAULT</span> false
+);
+
+<span class="kw">CREATE TABLE</span> <span class="tbl">keywords</span> (
+  id            uuid <span class="kw">PRIMARY KEY</span>,
+  project_id    uuid <span class="kw">REFERENCES</span> projects(id) <span class="kw">ON DELETE CASCADE</span>,
+  text          text <span class="kw">NOT NULL</span>,
+  intent        text, <span class="com">-- 'question' | 'complaint' | 'recommendation_ask' | null</span>
+  is_exclude    boolean <span class="kw">DEFAULT</span> false
+);</pre>
+
+  <h3>Discovery &amp; candidates (where the volume lives)</h3>
+<pre><span class="com">-- One row per scheduled or manual scan execution.</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">discovery_runs</span> (
+  id            uuid <span class="kw">PRIMARY KEY</span>,
+  project_id    uuid <span class="kw">REFERENCES</span> projects(id),
+  platform      text <span class="kw">NOT NULL</span>,
+  started_at    timestamptz,
+  completed_at  timestamptz,
+  posts_scanned int,
+  posts_matched int,
+  cost_usd      numeric(10,4), <span class="com">-- sum of LLM + API costs for this run</span>
+  error         text
+);
+
+<span class="com">-- Every candidate post/tweet/linkedin-post the system has ever seen.</span>
+<span class="com">-- Partition by platform for query perf at scale.</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">candidate_posts</span> (
+  id              uuid <span class="kw">PRIMARY KEY</span>,
+  project_id      uuid <span class="kw">REFERENCES</span> projects(id) <span class="kw">ON DELETE CASCADE</span>,
+  discovery_run_id uuid <span class="kw">REFERENCES</span> discovery_runs(id),
+  platform        text <span class="kw">NOT NULL</span>,
+  external_id     text <span class="kw">NOT NULL</span>, <span class="com">-- reddit fullname, tweet id, linkedin URN</span>
+  author_handle   text,
+  url             text,
+  title           text,
+  body            text,
+  posted_at       timestamptz,
+  engagement      jsonb, <span class="com">-- { upvotes, comments, likes, retweets } platform-dependent</span>
+  embedding       vector(1536), <span class="com">-- OpenAI text-embedding-3-small</span>
+  relevance_score numeric(4,3), <span class="com">-- 0.000 to 1.000, from LLM rerank</span>
+  intent          text, <span class="com">-- classified intent</span>
+  status          text <span class="kw">DEFAULT</span> <span class="str">'new'</span>,
+  <span class="com">-- 'new' | 'surfaced' | 'drafted' | 'replied' | 'dismissed' | 'stale'</span>
+  dismissed_reason text,
+  created_at      timestamptz <span class="kw">DEFAULT</span> now(),
+  <span class="kw">UNIQUE</span> (project_id, platform, external_id)
+);
+
+<span class="kw">CREATE INDEX</span> <span class="kw">ON</span> candidate_posts (project_id, status, relevance_score <span class="kw">DESC</span>);
+<span class="kw">CREATE INDEX</span> <span class="kw">ON</span> candidate_posts <span class="kw">USING</span> ivfflat (embedding vector_cosine_ops);</pre>
+
+  <h3>Drafts &amp; published actions</h3>
+<pre><span class="kw">CREATE TABLE</span> <span class="tbl">reply_drafts</span> (
+  id               uuid <span class="kw">PRIMARY KEY</span>,
+  candidate_post_id uuid <span class="kw">REFERENCES</span> candidate_posts(id) <span class="kw">ON DELETE CASCADE</span>,
+  project_id       uuid <span class="kw">REFERENCES</span> projects(id) <span class="kw">ON DELETE CASCADE</span>,
+  author_user_id   uuid <span class="kw">REFERENCES</span> users(id),
+  persona_id       uuid <span class="kw">REFERENCES</span> personas(id),
+  model            text, <span class="com">-- 'claude-haiku-4-5' | 'claude-sonnet-4-6' | 'claude-opus-4-7'</span>
+  generated_text   text <span class="kw">NOT NULL</span>,
+  final_text       text, <span class="com">-- after user edits</span>
+  user_edit_ratio  numeric(3,2), <span class="com">-- 0 = sent as-is, 1 = fully rewritten; for quality tracking</span>
+  input_tokens     int,
+  output_tokens    int,
+  cached_tokens    int,
+  cost_usd         numeric(10,5),
+  status           text <span class="kw">DEFAULT</span> <span class="str">'draft'</span>,
+  <span class="com">-- 'draft' | 'approved' | 'scheduled' | 'sent' | 'failed' | 'deleted'</span>
+  scheduled_for    timestamptz,
+  sent_at          timestamptz,
+  external_reply_id text, <span class="com">-- the platform's ID for our posted reply</span>
+  error            text
+);
+
+<span class="kw">CREATE TABLE</span> <span class="tbl">scheduled_posts</span> (
+  id                uuid <span class="kw">PRIMARY KEY</span>,
+  project_id        uuid <span class="kw">REFERENCES</span> projects(id) <span class="kw">ON DELETE CASCADE</span>,
+  platform_account_id uuid <span class="kw">REFERENCES</span> platform_accounts(id),
+  content           text <span class="kw">NOT NULL</span>,
+  media_urls        text[],
+  scheduled_for     timestamptz <span class="kw">NOT NULL</span>,
+  status            text <span class="kw">DEFAULT</span> <span class="str">'scheduled'</span>,
+  sent_at           timestamptz,
+  external_post_id  text,
+  error             text
+);
+
+<span class="kw">CREATE TABLE</span> <span class="tbl">personas</span> (
+  id            uuid <span class="kw">PRIMARY KEY</span>,
+  project_id    uuid <span class="kw">REFERENCES</span> projects(id) <span class="kw">ON DELETE CASCADE</span>,
+  name          text,
+  voice_prompt  text, <span class="com">-- "friendly builder, casual, no emoji, no buzzwords"</span>
+  example_replies text[], <span class="com">-- few-shot examples</span>
+  per_platform_hints jsonb <span class="com">-- { reddit: "...", linkedin: "..." }</span>
+);</pre>
+
+  <h3>Metering, credits, usage</h3>
+<pre><span class="com">-- Append-only usage log. Every billable action lands here.</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">usage_events</span> (
+  id            bigserial <span class="kw">PRIMARY KEY</span>,
+  org_id        uuid <span class="kw">NOT NULL</span>,
+  project_id    uuid,
+  occurred_at   timestamptz <span class="kw">DEFAULT</span> now(),
+  platform      text,
+  action        text <span class="kw">NOT NULL</span>,
+  <span class="com">-- 'scan' | 'embed' | 'rerank' | 'draft_reply' | 'draft_post' | 'publish'</span>
+  credits       int <span class="kw">NOT NULL</span>, <span class="com">-- abstract unit, maps to $ internally</span>
+  cost_usd      numeric(10,5),
+  ref_id        uuid <span class="com">-- FK into drafts or candidate_posts, for audit</span>
+);
+
+<span class="com">-- Monthly rollup, computed nightly from usage_events. For UI + enforcement.</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">usage_monthly</span> (
+  org_id        uuid,
+  period_start  date,
+  platform      text,
+  action        text,
+  total_credits int,
+  total_cost    numeric(10,4),
+  <span class="kw">PRIMARY KEY</span> (org_id, period_start, platform, action)
+);</pre>
+</div>
+
+<!-- ===== AI PIPELINE ===== -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">05 · AI pipeline</span>
+    <h2>Relevance &amp; generation</h2>
+  </div>
+
+  <p>Every scan funnels 500+ raw posts down to 5–20 surfaced candidates. Cheap filtering first, expensive judgment last. This is the single biggest margin-control lever.</p>
+
+  <div class="arch">Raw posts (500)
+     │
+     ▼  embedding lookup vs project intent vectors
+Candidate pool (150)       ← cosine similarity > 0.65
+     │
+     ▼  cheap LLM intent classification (Haiku, tiny prompt)
+Intent-matched (40)        ← is_question OR is_complaint OR is_rec_ask
+     │
+     ▼  full rerank with product context (Haiku, prompt cached)
+Scored candidates (top 20) ← relevance_score > 0.75
+     │
+     ▼  surface in inbox for user review
+Surfaced (10-20)
+     │
+     ▼  user clicks "draft reply" (Haiku default, Sonnet on toggle)
+Drafts
+     │
+     ▼  user approves or edits, then schedule or post
+Published</div>
+
+  <h3>Model selection strategy</h3>
+  <table>
+    <thead><tr><th>Stage</th><th>Model</th><th>Why</th><th>Cost/1M tok</th></tr></thead>
+    <tbody>
+      <tr><td>Embedding</td><td class="mono">text-embedding-3-small</td><td>Cheapest usable quality</td><td class="ok">$0.02 in</td></tr>
+      <tr><td>Intent classification</td><td class="mono">claude-haiku-4-5</td><td>1000 tok in, 20 tok out per post</td><td class="ok">$0.80 in / $4 out</td></tr>
+      <tr><td>Rerank</td><td class="mono">claude-haiku-4-5</td><td>Prompt cache brand context, evaluate batch of 10</td><td class="ok">$0.08 cached / $4 out</td></tr>
+      <tr><td>Reply draft (default)</td><td class="mono">claude-haiku-4-5</td><td>Good enough for 90% of replies</td><td class="ok">$0.80 in / $4 out</td></tr>
+      <tr><td>Reply draft (premium)</td><td class="mono">claude-sonnet-4-6</td><td>User toggle when they want a higher-quality take</td><td class="meh">$3 in / $15 out</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Prompt caching — the single biggest cost lever</h3>
+  <p>Brand voice + product description + ICP + persona examples run ~3,000 tokens and are identical for every reply in a project. Cache them. The 90% discount on cached input tokens cuts reply-generation cost roughly in half at volume.</p>
+<pre><span class="com">// Per-reply payload, with cache breakpoint</span>
+{
+  <span class="str">"model"</span>: <span class="str">"claude-haiku-4-5"</span>,
+  <span class="str">"system"</span>: [
+    { <span class="str">"type"</span>: <span class="str">"text"</span>,
+      <span class="str">"text"</span>: PROJECT_BRAND_VOICE_AND_PRODUCT, <span class="com">// ~3000 tok, stable</span>
+      <span class="str">"cache_control"</span>: { <span class="str">"type"</span>: <span class="str">"ephemeral"</span> } },
+    { <span class="str">"type"</span>: <span class="str">"text"</span>,
+      <span class="str">"text"</span>: PER_REQUEST_INSTRUCTIONS } <span class="com">// ~200 tok, fresh each time</span>
+  ],
+  <span class="str">"messages"</span>: [{ <span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: POST_CONTEXT_AND_TASK }]
+}</pre>
+
+  <h3>Anti-spam guardrails (built into the generation prompt)</h3>
+  <ul>
+    <li>Never lead with the product. Answer the question first, mention product only if directly relevant.</li>
+    <li>No link unless the user explicitly enables it for that draft.</li>
+    <li>Per-platform tone: Reddit = casual/skeptical; LinkedIn = measured; X = punchy.</li>
+    <li>Flag to user if generated reply looks promotional (self-check pass via separate Haiku call).</li>
+  </ul>
+</div>
+
+<!-- ===== JOB QUEUES ===== -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">06 · Job queues &amp; scheduling</span>
+    <h2>Who runs what, when</h2>
+  </div>
+
+  <table>
+    <thead><tr><th>Queue</th><th>Trigger</th><th>Concurrency</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">discover:reddit</td><td>Cron per project, every 15 min</td><td>Per-account: 1</td><td>Respects Reddit rate limit per OAuth client</td></tr>
+      <tr><td class="mono">discover:x</td><td>Cron per project, every 30 min</td><td>Global: 4</td><td>Throttled by Apify scraper throughput</td></tr>
+      <tr><td class="mono">discover:linkedin</td><td>Triggered by Chrome extension when user browses</td><td>Per-user: 1</td><td>Not scheduled; passive collection from user's session</td></tr>
+      <tr><td class="mono">ai:embed</td><td>After discovery completes</td><td>Global: 20</td><td>Batched 100 posts per call to embedding API</td></tr>
+      <tr><td class="mono">ai:rerank</td><td>After embed completes</td><td>Global: 10</td><td>Claude Haiku, batched 10 candidates per call</td></tr>
+      <tr><td class="mono">ai:draft_reply</td><td>User action</td><td>Per-user: 2</td><td>Sub-second-latency UX matters; keep hot</td></tr>
+      <tr><td class="mono">publish:reddit</td><td>User "send" or scheduled time</td><td>Per-account: 1</td><td>Enforce ≥ 10 min gap between comments per account</td></tr>
+      <tr><td class="mono">publish:x</td><td>User "send" or scheduled time</td><td>Per-account: 1</td><td>Enforce 300/3h per-user window</td></tr>
+      <tr><td class="mono">publish:linkedin</td><td>Dispatches to Chrome extension via WebSocket</td><td>Per-user: 1</td><td>Human-paced; 25–40/day hard cap</td></tr>
+      <tr><td class="mono">meter:rollup</td><td>Nightly cron</td><td>Global: 1</td><td>Rolls usage_events into usage_monthly</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Circuit breakers</h4>
+  <ul>
+    <li>If a <code>platform_account</code> sees a 429 or "account restricted" response, flip status to <code>restricted</code> and pause all queues for that account until user re-verifies.</li>
+    <li>Per-org daily cost cap: if daily LLM spend exceeds 3× the monthly-average daily cost, pause and alert ops — catches runaway abuse.</li>
+    <li>If Apify scraper failure rate &gt; 10% in an hour, failover to backup scraper provider.</li>
+  </ul>
+</div>
+
+<!-- ===== COSTS ===== -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">07 · Cost model at scale</span>
+    <h2>Per-user COGS · Growing Business plan ($199/mo)</h2>
+  </div>
+
+  <p>Modeled for a typical Growing Business user: 60 scans/mo × ~500 posts/scan = 30k posts processed, ~300 replies drafted, ~200 replies sent, Reddit + X + LinkedIn all enabled.</p>
+
+  <div class="cost-strip">
+    <div class="cost-cell">
+      <div class="cost-n">$7.20</div>
+      <div class="cost-l">LLM (Haiku)</div>
+      <div class="cost-sub">Rerank + drafts + intent</div>
+    </div>
+    <div class="cost-cell">
+      <div class="cost-n">$0.60</div>
+      <div class="cost-l">Embeddings</div>
+      <div class="cost-sub">30k posts × 200 tok</div>
+    </div>
+    <div class="cost-cell">
+      <div class="cost-n">$3.70</div>
+      <div class="cost-l">Infra</div>
+      <div class="cost-sub">Postgres + Redis + compute + WS</div>
+    </div>
+    <div class="cost-cell">
+      <div class="cost-n">$0.70</div>
+      <div class="cost-l">X API + Apify</div>
+      <div class="cost-sub">Amortized at 500 X-enabled users</div>
+    </div>
+    <div class="cost-cell">
+      <div class="cost-n">$0.00</div>
+      <div class="cost-l">Reddit API</div>
+      <div class="cost-sub">Free tier sufficient at current scale</div>
+    </div>
+    <div class="cost-cell">
+      <div class="cost-n">$0.00</div>
+      <div class="cost-l">LinkedIn API</div>
+      <div class="cost-sub">Free for posts; extension has no usage cost</div>
+    </div>
+    <div class="cost-cell">
+      <div class="cost-n">$5.77</div>
+      <div class="cost-l">Stripe</div>
+      <div class="cost-sub">2.9% + $0.30</div>
+    </div>
+    <div class="cost-cell">
+      <div class="cost-n">$3.00</div>
+      <div class="cost-l">Support &amp; ops</div>
+      <div class="cost-sub">Mostly LinkedIn restriction tickets</div>
+    </div>
+  </div>
+
+  <div class="panel dark">
+    <h3>Gross margin math</h3>
+    <table>
+      <thead><tr><th style="color:rgba(250,247,242,.5)">Plan</th><th style="color:rgba(250,247,242,.5)">Price</th><th style="color:rgba(250,247,242,.5)">COGS</th><th style="color:rgba(250,247,242,.5)">Margin</th><th style="color:rgba(250,247,242,.5)">Gross $</th></tr></thead>
+      <tbody>
+        <tr><td style="color:rgba(250,247,242,.85)">Solopreneur</td><td style="color:rgba(250,247,242,.85)">$49</td><td style="color:rgba(250,247,242,.85)">~$10</td><td style="color:#8FBC8F">80%</td><td style="color:rgba(250,247,242,.85)">$39</td></tr>
+        <tr><td style="color:rgba(250,247,242,.85)"><strong style="color:#D4A847">Growing Business</strong></td><td style="color:rgba(250,247,242,.85)">$199</td><td style="color:rgba(250,247,242,.85)">~$21</td><td style="color:#8FBC8F">89%</td><td style="color:rgba(250,247,242,.85)"><strong style="color:#D4A847">$178</strong></td></tr>
+        <tr><td style="color:rgba(250,247,242,.85)">Agency</td><td style="color:rgba(250,247,242,.85)">$799</td><td style="color:rgba(250,247,242,.85)">~$75</td><td style="color:#8FBC8F">91%</td><td style="color:rgba(250,247,242,.85)">$724</td></tr>
+      </tbody>
+    </table>
+    <p style="color:rgba(250,247,242,.7);margin-top:10px">Agency plan scales sub-linearly on COGS because one brand-voice prompt is cached across 5 projects, and most infra overhead is per-org not per-project. This is where the money actually is.</p>
+  </div>
+</div>
+
+<!-- ===== RISKS ===== -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">08 · Risks &amp; mitigations</span>
+    <h2>What breaks this</h2>
+  </div>
+
+  <div class="three-col">
+    <div class="panel accent-acc">
+      <h4>Platform policy</h4>
+      <p><strong>Reddit changes API pricing again.</strong> Keep a scraper fallback (Pushshift-like) warm. Budget 20% of Reddit-attributable revenue as policy reserve.</p>
+    </div>
+    <div class="panel accent-acc">
+      <h4>X API cost explosion</h4>
+      <p>Basic → Pro is 25× cost jump. Hybrid with Apify already insulates; add a per-project X quota so a power user can't bankrupt the pool.</p>
+    </div>
+    <div class="panel accent-acc">
+      <h4>LinkedIn crackdown</h4>
+      <p>Single biggest support cost. Ship conservative defaults, require user opt-in for the engagement extension, and clearly communicate "your account, your risk."</p>
+    </div>
+    <div class="panel accent-amb">
+      <h4>LLM abuse</h4>
+      <p>Per-org daily cost circuit breaker (flag at 3× monthly-avg-daily). Credit-based pricing for anything beyond fair-use so cost is passed through.</p>
+    </div>
+    <div class="panel accent-amb">
+      <h4>Chrome extension decay</h4>
+      <p>LinkedIn DOM changes every 6–10 weeks. Automated canary tests running in a headless browser against a dedicated test account catch breakage within hours.</p>
+    </div>
+    <div class="panel accent-amb">
+      <h4>Spammy reputation</h4>
+      <p>Anti-spam self-check pass before drafts surface; kill accounts of customers posting obviously-promotional replies. Brand is the long-term moat.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BUILD ORDER ===== -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">09 · Build order</span>
+    <h2>What to ship first</h2>
+  </div>
+
+  <div class="panel">
+    <h3>Week 1–2 · Foundation</h3>
+    <p>Schema + auth + org/project/platform_account tables. Reddit adapter only. Embedding + Haiku rerank pipeline. Simple inbox UI. Ship this to existing ReplyDaddy Reddit users as a refactor.</p>
+  </div>
+  <div class="panel">
+    <h3>Week 3–4 · X (API-only)</h3>
+    <p>X adapter via official API only, no Apify yet. Reuse the rerank + draft pipeline. Offer as beta add-on to existing users for +$40/mo. Measure usage before committing to the Apify integration.</p>
+  </div>
+  <div class="panel">
+    <h3>Week 5–8 · LinkedIn publishing (API)</h3>
+    <p>Buffer-style LinkedIn posting via official API. Zero-risk, fully sanctioned. This alone unlocks the "multi-platform publishing" positioning and lets you charge $149+/mo. Do this BEFORE the engagement extension.</p>
+  </div>
+  <div class="panel">
+    <h3>Week 9–14 · LinkedIn engagement extension</h3>
+    <p>Chrome extension with WebSocket backend, conservative rate limits, clear user-facing risk disclosures. This is the expensive, risky work. Start with 50 beta users, learn the ban-rate, iterate.</p>
+  </div>
+  <div class="panel accent-grn">
+    <h3>Week 15+ · Agency tier</h3>
+    <p>Multi-project UI, white-label, per-client reporting, consolidated billing. Priced at $799+. This is where the real revenue is — don't skip it, but don't build it until you have 3+ agencies asking for it.</p>
+  </div>
+</div>
+
+<!-- ===== OPEN QUESTIONS ===== -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">10 · Open questions</span>
+    <h2>Decisions to make before building</h2>
+  </div>
+
+  <ul>
+    <li><strong>Credits vs unlimited.</strong> The current plan uses "unlimited replies**" with an asterisk. Moving to credit-based pricing protects margin but creates friction. Recommendation: keep "unlimited" for first-year marketing, but implement a hard fair-use ceiling (e.g. 1,500 replies/mo) silently.</li>
+    <li><strong>Do we host the LLM or call APIs?</strong> Self-hosting Llama 3.3 70B on Together.ai or Groq would cut reply-gen cost by ~60%, but quality on brand-voice matching is measurably worse. Stay on Claude until ARR &gt; $500k, then A/B test a hosted model for intent classification only.</li>
+    <li><strong>Who owns the posted content?</strong> If a user gets sued over a reply generated by our tool, where does liability sit? Terms need an "advisory draft, user approves and owns" clause reviewed by a US lawyer.</li>
+    <li><strong>LinkedIn account warm-up.</strong> Some competitors offer "account warming" where the extension slowly builds activity before doing real work. Powerful feature but materially increases ban risk for the user. Decide if we offer it at all.</li>
+    <li><strong>Agency white-label scope.</strong> Full custom domain + logo, or just "Powered by ReplyDaddy" hidden? Full white-label typically demands enterprise pricing; decide price anchor.</li>
+  </ul>
+</div>
+
+</body>
+</html>
