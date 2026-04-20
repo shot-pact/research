@@ -140,8 +140,8 @@ hr{border:none;border-top:0.5px solid var(--bdr2);margin:12px 0}
 
 <div class="header">
   <div class="eyebrow">Design Doc · April 2026 · Idea: ReplyDaddy Multi-Platform</div>
-  <h1>Multi-platform <em>social reply</em> co-pilot</h1>
-  <p class="tagline">Expanding ReplyDaddy from Reddit-only to Reddit + X + LinkedIn. Infrastructure, data model, AI pipeline, and unit economics for the extension.</p>
+  <h1>Reddit <em>listens</em>, LinkedIn <em>speaks</em></h1>
+  <p class="tagline">A focused two-platform co-pilot — Reddit for discovery + reply, LinkedIn for publishing. One brand voice, one content loop, no Chrome-extension risk. What makes this different from stacking ReplyGuy + Buffer.</p>
 </div>
 
 <!-- ===== SCOPE ===== -->
@@ -154,23 +154,125 @@ hr{border:none;border-top:0.5px solid var(--bdr2);margin:12px 0}
   <div class="panel accent-grn">
     <h4>In scope</h4>
     <ul>
-      <li><strong>Discovery</strong>: monitor Reddit subreddits, X lists/keywords, and LinkedIn hashtags/companies for posts matching project keywords + intent.</li>
-      <li><strong>Relevance ranking</strong>: embeddings + LLM rerank to surface only genuinely-engageable posts.</li>
-      <li><strong>Reply generation</strong>: Claude-powered drafts in the user's brand voice, per-platform tone.</li>
-      <li><strong>Posting</strong>: Reddit API and LinkedIn API for publishing; Chrome extension for LinkedIn engagement (comments/reactions) and X engagement fallback when API is rate-limited.</li>
-      <li><strong>Multi-tenant projects</strong>: agencies can manage 5–20 client projects; solopreneurs get one.</li>
+      <li><strong>Reddit discovery + reply</strong>: monitor target subreddits and keywords, rank by intent, draft replies in your voice, schedule or publish via official API.</li>
+      <li><strong>LinkedIn publishing</strong>: Buffer-style scheduled posts to personal profiles and company pages via official LinkedIn Posts API (<code>w_member_social</code>, <code>w_organization_social</code>). Text, images, documents, articles, carousels.</li>
+      <li><strong>The Reddit → LinkedIn content loop</strong>: turn insights from your Reddit listening into LinkedIn content automatically. This is the core wedge.</li>
+      <li><strong>Multi-tenant projects</strong>: agencies manage 5–20 client projects; solopreneurs get one.</li>
       <li><strong>Usage metering</strong>: credit-based per action; soft caps per tier.</li>
     </ul>
   </div>
 
   <div class="panel accent-acc">
-    <h4>Out of scope</h4>
+    <h4>Out of scope (deliberately)</h4>
     <ul>
+      <li><strong>X / Twitter</strong>: API pricing makes the unit economics ugly and scraper fallbacks are fragile. Revisit when we have 1,000+ paying users.</li>
+      <li><strong>LinkedIn engagement automation</strong> (auto-commenting, auto-reacting, connection requests): no sanctioned API path, requires a Chrome extension with DOM scraping, high account-ban risk, and massive support overhead. This is what Taplio/Dripify do and where they get all their support tickets.</li>
       <li>Instagram, TikTok, Facebook Groups — no viable API path without TOS violation.</li>
       <li>DM automation on any platform — legal grey zone and high ban risk.</li>
-      <li>Connection-request automation on LinkedIn (separate product category, high risk).</li>
       <li>Fully autonomous replies without user approval. Users always confirm before a post ships.</li>
     </ul>
+  </div>
+</div>
+
+<!-- ===== UNIQUE VALUE ===== -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">01B · Why users pick us</span>
+    <h2>What makes this different from stacking ReplyGuy + Buffer</h2>
+  </div>
+
+  <p class="lead">Every feature below solves a specific, named pain that existing tools either ignore or do badly. Nothing is here just to pad the feature grid.</p>
+
+  <!-- Theme 1: The Loop -->
+  <div class="panel accent-amb">
+    <span class="pill p-ai">The core wedge</span>
+    <h3>Theme 1 · Reddit listens, LinkedIn speaks</h3>
+    <p>Every tool in this space treats discovery and publishing as separate jobs. They're not — they're one feedback loop. This is what no competitor does.</p>
+
+    <h4>Pain-point mining → LinkedIn drafts</h4>
+    <p>The system clusters recurring complaints, questions, and "I wish there was a tool for X" posts across your target subreddits into themes. Every week, you get 3–5 LinkedIn post drafts grounded in real, cited Reddit pain. <strong>Why users care:</strong> LinkedIn content currently comes from either a blank-page struggle or generic AI slop. This is content with receipts.</p>
+
+    <h4>Voice-of-customer dictionary</h4>
+    <p>A live dashboard of the exact phrases your ICP uses when they describe their problems. "Spreadsheet hell", "my devs won't stop complaining", "I just need something that works" — their words, not your assumptions. <strong>Why users care:</strong> copy that matches customer language converts 2–3× better, and nobody hands you the language like this.</p>
+
+    <h4>Reply-to-post converter</h4>
+    <p>You write a great reply on Reddit. One click turns it into a polished LinkedIn post with context, hooks, and a call-to-engage — without losing your voice. <strong>Why users care:</strong> your best Reddit comments currently die in a thread. Now they become LinkedIn content assets.</p>
+
+    <h4>Thread → carousel transformer</h4>
+    <p>A long Reddit comment or thread you authored becomes a LinkedIn image carousel (slide-by-slide, auto-designed). Carousels are LinkedIn's highest-performing format and take 30 minutes to hand-make. <strong>Why users care:</strong> 10× output at the same voice quality.</p>
+  </div>
+
+  <!-- Theme 2: Speed -->
+  <div class="panel accent-acc">
+    <span class="pill p-reddit">Speed</span>
+    <h3>Theme 2 · Be first, not thorough</h3>
+    <p>On Reddit, the first 20 commenters get 80% of the visibility. On LinkedIn, timing of the post relative to your ICP's online hours matters more than the post itself. Both are solvable.</p>
+
+    <h4>Hot-topic early alerts</h4>
+    <p>Push notifications (email, Slack, mobile) fire within 2 minutes when a post in your target subreddit crosses a velocity threshold (e.g. 50 upvotes in the first hour). You get a pre-drafted reply ready to approve. <strong>Why users care:</strong> existing tools do polling every 15–30 min and you miss the window. Speed is the whole game.</p>
+
+    <h4>ICP-aware LinkedIn scheduling</h4>
+    <p>Not "best time to post" generic advice. The scheduler learns when the people who actually engage with YOUR posts are online, and slots your content accordingly. <strong>Why users care:</strong> every LinkedIn tool gives you "Tuesday 9am EST". This tells you "your ICP is active at 7:12 PST on Thursdays — post then."</p>
+
+    <h4>Newsjacking pipeline</h4>
+    <p>Monitors niche news sources and trending Reddit threads in your space. When something big breaks, a reactive LinkedIn post draft appears in your inbox within 5 minutes. <strong>Why users care:</strong> reactive posts get 3–5× baseline engagement but require you to be watching. The tool watches for you.</p>
+  </div>
+
+  <!-- Theme 3: Voice quality -->
+  <div class="panel accent-acc2">
+    <span class="pill p-ai">Quality</span>
+    <h3>Theme 3 · Your voice, not ChatGPT voice</h3>
+    <p>The #1 reason people churn from AI-powered content tools: everything sounds the same. This is fixable with two ideas nobody has properly shipped.</p>
+
+    <h4>Cohort-trained persona (not just a prompt)</h4>
+    <p>You paste 15–25 of your own past posts and replies. We build a persona embedding + style exemplars used in every draft. <strong>Why users care:</strong> competitors give you a "voice prompt" text box. This actually learns your rhythms, sentence length, pet phrases, what you never say.</p>
+
+    <h4>Anti-promotional self-check</h4>
+    <p>Every draft runs through a separate critique pass: "does this sound promotional?", "does it answer before pitching?", "would a moderator flag this?". If it fails, it's auto-rewritten and you see only the clean version. <strong>Why users care:</strong> Reddit will shadow-ban you quietly. This protects your account reputation without you having to be the judge.</p>
+
+    <h4>Cross-platform consistency check</h4>
+    <p>Before a LinkedIn post publishes, the system checks whether it contradicts positions you've taken on Reddit in the last 90 days. Flags conflicts so you don't look inconsistent to anyone following you on both platforms. <strong>Why users care:</strong> unique to a two-platform tool — nobody else can do this.</p>
+  </div>
+
+  <!-- Theme 4: Revenue, not vanity -->
+  <div class="panel accent-grn">
+    <span class="pill p-ok">Revenue</span>
+    <h3>Theme 4 · Pipeline, not vanity metrics</h3>
+    <p>Upvotes and impressions don't pay rent. What matters is: did this reply or post generate a profile click, a product mention, a demo, a trial signup?</p>
+
+    <h4>Competitor mention radar</h4>
+    <p>Real-time alerts when someone names a competitor in a subreddit you track. A pre-drafted comparison reply — not salesy, not dismissive — appears ready to send. <strong>Why users care:</strong> these are your hottest buying signals and they're happening right now without you.</p>
+
+    <h4>ICP detector on every engager</h4>
+    <p>Every person who upvotes, comments, likes, or replies gets auto-scored against your ICP (title, company size, industry). Your inbox highlights the ones worth following up with personally. <strong>Why users care:</strong> LinkedIn and Reddit both generate tons of noise engagement. This is a mini-CRM layer built into the platform.</p>
+
+    <h4>Outcome-weighted analytics</h4>
+    <p>Tracks profile clicks from each reply, product URL clicks from each post, and demo/trial conversions with UTM attribution. The dashboard shows "this reply → 12 profile visits → 2 signups" instead of "this reply got 40 upvotes." <strong>Why users care:</strong> you stop optimizing for engagement theater and start optimizing for pipeline.</p>
+  </div>
+
+  <!-- Theme 5: Built for humans and teams -->
+  <div class="panel">
+    <span class="pill p-li">Workflow</span>
+    <h3>Theme 5 · Built for how founders and agencies actually work</h3>
+
+    <h4>Voice-note mode</h4>
+    <p>Mobile-first: tap record, say what's on your mind for 60 seconds, get back both a Reddit reply draft (for a specific thread you're responding to) and a LinkedIn post draft — same idea, different form. <strong>Why users care:</strong> most founders have takes all day and write zero of them down. This is the lowest-friction capture loop on the market.</p>
+
+    <h4>Agency approval workflow</h4>
+    <p>Agency writer drafts → client reviews in a shareable link → client approves or comments → tool publishes on approval. No email back-and-forth, no Slack screenshots, full audit trail per client. <strong>Why users care:</strong> the #1 reason agencies don't use engagement tools is the approval chaos. Solved.</p>
+
+    <h4>Multi-persona safety</h4>
+    <p>Separates "your personal profile" and "your company page" with hard guardrails — brand voices, asset libraries, and publishing permissions never cross-contaminate. Accidentally posting to the wrong account is literally impossible. <strong>Why users care:</strong> a single misfire from the wrong account is the nightmare scenario for anyone running a brand. This removes it.</p>
+
+    <h4>Reply template library</h4>
+    <p>Save winning reply structures (not exact text) as reusable templates: "objection reframe", "user-story example", "friendly disagreement". Templates are sharable across team seats. <strong>Why users care:</strong> great replies follow patterns. Once you find what works, you should be able to reuse the shape.</p>
+  </div>
+
+  <!-- The 60-second pitch -->
+  <div class="panel dark">
+    <h3>The 60-second pitch</h3>
+    <p><strong>ReplyGuy</strong> finds Reddit posts and drafts replies. <strong>Buffer</strong> schedules LinkedIn posts. Using both leaves a gap: your Reddit listening and your LinkedIn publishing never talk to each other. We close that gap. The Reddit insights become LinkedIn content. The LinkedIn posts reach the exact people who were asking questions on Reddit. One voice, one persona, one loop — with the revenue attribution, speed alerts, and anti-spam guardrails that neither of those tools bothers to build.</p>
+    <p style="margin-top:10px"><strong>Who it's for:</strong> B2B SaaS founders, agencies running client content programs, creators building an audience. Not for: consumer brands, e-commerce, anyone who wants blanket automation across 10 platforms.</p>
   </div>
 </div>
 
