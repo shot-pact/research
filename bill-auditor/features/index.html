@@ -42,7 +42,6 @@ body {
 
 .page { max-width: 1180px; margin: 0 auto; padding: 64px 48px 120px; }
 
-/* ── Hero ── */
 .hero { margin-bottom: 72px; padding-bottom: 36px; border-bottom: 1px solid var(--border); }
 .hero-eyebrow {
   font-size: 11px; font-weight: 700; letter-spacing: .16em;
@@ -76,7 +75,6 @@ body {
   letter-spacing: .08em; text-transform: uppercase;
 }
 
-/* ── TOC ── */
 .toc {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 14px; padding: 22px 26px; margin-bottom: 72px;
@@ -98,10 +96,9 @@ body {
   font-weight: 500; letter-spacing: 0.3px;
 }
 
-/* ── Section ── */
 .section { margin-bottom: 72px; scroll-margin-top: 24px; }
 .sec-head {
-  display: flex; align-items: baseline; gap: 16px; margin-bottom: 28px;
+  display: flex; align-items: baseline; gap: 16px; margin-bottom: 14px;
   padding-bottom: 14px; border-bottom: 1px solid var(--border);
 }
 .sec-num {
@@ -114,18 +111,17 @@ body {
   font-weight: 400;
 }
 .sec-sub {
-  font-size: 14.5px; color: var(--ink2); max-width: 780px;
-  line-height: 1.7; margin: -12px 0 24px; padding-left: 42px;
+  font-size: 14.5px; color: var(--ink2); max-width: 820px;
+  line-height: 1.7; margin: 6px 0 26px; padding-left: 42px;
 }
 
-/* ── Feature card grid ── */
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
-.grid.three { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+.grid.three { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
 
 .card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; padding: 20px 22px;
-  display: flex; flex-direction: column; gap: 8px;
+  border-radius: 12px; padding: 22px 24px;
+  display: flex; flex-direction: column; gap: 10px;
   transition: border-color .15s, box-shadow .15s;
 }
 .card:hover { border-color: rgba(200,75,30,.3); box-shadow: 0 4px 20px rgba(28,26,20,.06); }
@@ -135,14 +131,30 @@ body {
 
 .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 .card-title {
-  font-size: 14.5px; font-weight: 600; color: var(--ink);
+  font-size: 15px; font-weight: 600; color: var(--ink);
   letter-spacing: -0.1px; line-height: 1.35;
 }
-.card-desc { font-size: 13px; color: var(--ink2); line-height: 1.6; }
+.card-desc { font-size: 13.5px; color: var(--ink2); line-height: 1.65; }
+.card-desc strong { color: var(--ink); font-weight: 600; }
+.card-desc .money { font-family: var(--mono); font-weight: 600; color: var(--ink); }
 .card-kbd {
-  font-family: var(--mono); font-size: 11px; color: var(--ink3);
-  letter-spacing: 0.3px;
+  font-family: var(--mono); font-size: 12px; color: var(--ink2);
+  background: var(--sunk); padding: 1px 6px; border-radius: 3px;
 }
+
+.ex {
+  margin-top: 10px; padding: 10px 12px 10px 14px;
+  background: var(--sunk); border-left: 2px solid var(--ember);
+  border-radius: 0 6px 6px 0;
+  font-size: 12.5px; color: var(--ink2); line-height: 1.6;
+}
+.ex::before {
+  content: 'EXAMPLE'; display: block;
+  color: var(--ember); font-weight: 700; font-size: 9.5px;
+  letter-spacing: 0.9px; margin-bottom: 4px;
+}
+.ex .money { font-family: var(--mono); font-weight: 600; color: var(--ink); }
+.ex strong { color: var(--ink); font-weight: 600; }
 
 .badge {
   font-size: 10px; font-weight: 700; letter-spacing: .06em;
@@ -154,7 +166,6 @@ body {
 .b-safe { background: var(--safe-bg); color: var(--safe); }
 .b-ink { background: rgba(28,26,20,.08); color: var(--ink2); }
 
-/* ── Flag table ── */
 .tbl-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); }
 table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 thead tr { border-bottom: 1px solid var(--border); background: var(--sunk); }
@@ -164,26 +175,26 @@ th {
   letter-spacing: .08em; text-transform: uppercase;
 }
 td {
-  padding: 14px 18px; border-bottom: 1px solid var(--border2);
-  color: var(--ink2); vertical-align: top;
+  padding: 16px 18px; border-bottom: 1px solid var(--border2);
+  color: var(--ink2); vertical-align: top; line-height: 1.55;
 }
 tr:last-child td { border-bottom: none; }
-td.flag-name { font-weight: 600; color: var(--ink); }
+td.flag-name { font-weight: 600; color: var(--ink); font-size: 14px; }
 td.mono { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
+td .money { font-family: var(--mono); color: var(--ink); font-weight: 600; }
 
-/* ── Pipeline steps ── */
-.pipe { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.pipe { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
 .pipe-step {
-  padding: 16px 16px; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; position: relative;
+  padding: 18px 18px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px;
 }
 .pipe-num {
   font-family: var(--mono); font-size: 11px; color: var(--ember);
-  font-weight: 600; margin-bottom: 6px; letter-spacing: 0.4px;
+  font-weight: 600; margin-bottom: 8px; letter-spacing: 0.4px;
 }
-.pipe-label { font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.4; }
+.pipe-label { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.4; margin-bottom: 6px; }
+.pipe-desc { font-size: 12.5px; color: var(--ink2); line-height: 1.55; }
 
-/* ── Pricing cards ── */
 .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .plan {
   padding: 26px 26px 28px; border-radius: 14px;
@@ -215,11 +226,17 @@ td.mono { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
 .plan-feats li::before {
   content: '✓'; color: var(--ember); font-weight: 700; flex-shrink: 0;
 }
-.plan.primary .plan-feats li::before { color: var(--ember); }
 .plan-feats li.strong { font-weight: 600; color: var(--ink); }
 .plan.primary .plan-feats li.strong { color: var(--bg); }
+.plan-best {
+  margin-top: 18px; padding: 12px 14px;
+  background: var(--sunk); border-radius: 8px;
+  font-size: 12.5px; line-height: 1.55; color: var(--ink2);
+}
+.plan.primary .plan-best { background: rgba(244,239,229,0.1); color: rgba(244,239,229,0.85); }
+.plan-best strong { color: var(--ink); font-weight: 600; }
+.plan.primary .plan-best strong { color: var(--bg); }
 
-/* ── Data model block ── */
 .schema {
   font-family: var(--mono); font-size: 13px; line-height: 1.85;
   background: var(--ink); color: #F4EFE5; padding: 24px 28px;
@@ -229,7 +246,6 @@ td.mono { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
 .schema .s { color: #A8D4A5; }
 .schema .c { color: #8C8776; font-style: italic; }
 
-/* ── Journey strip ── */
 .journey {
   display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
   padding: 18px 20px; background: var(--surface);
@@ -243,7 +259,6 @@ td.mono { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
 .jstep.ember { background: var(--ember-bg); color: var(--ember); }
 .jsep { color: var(--ink3); font-size: 14px; }
 
-/* ── Footer ── */
 .foot {
   margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--border);
   display: flex; justify-content: space-between; align-items: baseline;
@@ -263,372 +278,413 @@ td.mono { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
 <body>
 <div class="page">
 
-  <!-- ── Hero ── -->
   <header class="hero">
     <div class="hero-eyebrow">shot·pact · research · feature list</div>
-    <h1>A mobile auditor for American <em>medical bills</em>.</h1>
+    <h1>A phone app that finds errors on your <em>medical bills</em>.</h1>
     <p class="hero-sub">
-      <strong>shot-pact</strong> scans itemized bills or EOBs, flags the five canonical billing errors — duplicates, upcodes, surprise charges, unbundling, opaque lump sums — drafts a dispute letter citing the No Surprises Act, and sends it through certified mail, the hospital patient portal, or email. Pricing is contingency-based: free unless we recover money for you.
+      <strong>shot-pact</strong> is a mobile app for people who just got a confusing hospital bill. Snap a photo of the bill (or upload the PDF), the app reads every line, circles the charges that look wrong, explains why in plain English, and writes a dispute letter to the hospital for you. You only pay if you actually get money back.
     </p>
     <div class="hero-stats">
-      <div class="stat"><span class="stat-val">5</span><span class="stat-lab">Flag types</span></div>
-      <div class="stat"><span class="stat-val">11</span><span class="stat-lab">Screens</span></div>
-      <div class="stat"><span class="stat-val">78%</span><span class="stat-lab">Historical recovery rate</span></div>
-      <div class="stat"><span class="stat-val">$1,247</span><span class="stat-lab">Avg. recovery / bill</span></div>
-      <div class="stat"><span class="stat-val">iOS + Android</span><span class="stat-lab">Native targets</span></div>
+      <div class="stat"><span class="stat-val">5</span><span class="stat-lab">types of errors caught</span></div>
+      <div class="stat"><span class="stat-val">11</span><span class="stat-lab">screens in the app</span></div>
+      <div class="stat"><span class="stat-val">78%</span><span class="stat-lab">of disputes get money back</span></div>
+      <div class="stat"><span class="stat-val">$1,247</span><span class="stat-lab">avg. refund per bill</span></div>
+      <div class="stat"><span class="stat-val">iOS + Android</span><span class="stat-lab">both supported</span></div>
     </div>
   </header>
 
-  <!-- ── TOC ── -->
   <nav class="toc">
     <div class="toc-label">Contents</div>
     <a href="#s1"><span class="n">01</span> Auth & onboarding</a>
-    <a href="#s2"><span class="n">02</span> Bill capture</a>
-    <a href="#s3"><span class="n">03</span> Scan pipeline</a>
-    <a href="#s4"><span class="n">04</span> Flag taxonomy</a>
-    <a href="#s5"><span class="n">05</span> Results</a>
-    <a href="#s6"><span class="n">06</span> Flag detail</a>
-    <a href="#s7"><span class="n">07</span> Dispute composer</a>
-    <a href="#s8"><span class="n">08</span> Sent & tracking</a>
+    <a href="#s2"><span class="n">02</span> Capturing the bill</a>
+    <a href="#s3"><span class="n">03</span> How the scan works</a>
+    <a href="#s4"><span class="n">04</span> The 5 error types</a>
+    <a href="#s5"><span class="n">05</span> Results screen</a>
+    <a href="#s6"><span class="n">06</span> Flag detail view</a>
+    <a href="#s7"><span class="n">07</span> Dispute letter</a>
+    <a href="#s8"><span class="n">08</span> After you hit send</a>
     <a href="#s9"><span class="n">09</span> Savings estimator</a>
     <a href="#s10"><span class="n">10</span> Dashboard</a>
     <a href="#s11"><span class="n">11</span> Pricing</a>
-    <a href="#s12"><span class="n">12</span> Platform & trust</a>
+    <a href="#s12"><span class="n">12</span> Privacy & trust</a>
     <a href="#s13"><span class="n">13</span> Data model</a>
     <a href="#journey"><span class="n">→</span> End-to-end flow</a>
   </nav>
 
-  <!-- ── Journey strip ── -->
   <section class="section" id="journey">
     <div class="sec-head">
       <span class="sec-num">FLOW</span>
-      <h2 class="sec-title">End-to-end user journey</h2>
+      <h2 class="sec-title">What a new user does, start to finish</h2>
     </div>
+    <p class="sec-sub">The ember-colored steps are where the core value happens. Everything else is setup and payoff.</p>
     <div class="journey">
       <span class="jstep">sign up</span><span class="jsep">→</span>
-      <span class="jstep">pricing</span><span class="jsep">→</span>
+      <span class="jstep">pick plan</span><span class="jsep">→</span>
       <span class="jstep">onboard</span><span class="jsep">→</span>
-      <span class="jstep ember">capture</span><span class="jsep">→</span>
+      <span class="jstep ember">snap bill</span><span class="jsep">→</span>
       <span class="jstep ember">scan</span><span class="jsep">→</span>
-      <span class="jstep ember">results</span><span class="jsep">→</span>
-      <span class="jstep">flag detail</span><span class="jsep">→</span>
-      <span class="jstep ember">dispute</span><span class="jsep">→</span>
-      <span class="jstep">sent</span><span class="jsep">→</span>
-      <span class="jstep">dashboard</span>
+      <span class="jstep ember">see errors</span><span class="jsep">→</span>
+      <span class="jstep">review each flag</span><span class="jsep">→</span>
+      <span class="jstep ember">send letter</span><span class="jsep">→</span>
+      <span class="jstep">wait for reply</span><span class="jsep">→</span>
+      <span class="jstep">get money back</span>
     </div>
   </section>
 
-  <!-- ── 01 Auth & Onboarding ── -->
   <section class="section" id="s1">
     <div class="sec-head">
       <span class="sec-num">01</span>
       <h2 class="sec-title">Auth & onboarding</h2>
     </div>
+    <p class="sec-sub">The first minute in the app. Goal is to get a new user from "who are you people" to "okay, I want to try this on my bill."</p>
     <div class="grid">
       <div class="card">
-        <div class="card-head"><div class="card-title">Email + password sign-up</div><span class="badge b-ink">auth</span></div>
-        <div class="card-desc">Standard credential flow with Google OAuth as a one-tap alternative.</div>
+        <div class="card-head"><div class="card-title">Sign up with email or Google</div><span class="badge b-ink">auth</span></div>
+        <div class="card-desc">Create an account with email and password, or tap <strong>Continue with Google</strong> so you don't have to remember another password.</div>
+        <div class="ex">Tap Google, pick your Gmail, you're in. Takes about 4 seconds.</div>
       </div>
       <div class="card">
-        <div class="card-head"><div class="card-title">Forgot password</div><span class="badge b-ink">auth</span></div>
-        <div class="card-desc">Email-based reset link, separate screen with back nav.</div>
+        <div class="card-head"><div class="card-title">Forgot password flow</div><span class="badge b-ink">auth</span></div>
+        <div class="card-desc">Type your email, we send a reset link, you pick a new password. Standard stuff.</div>
       </div>
       <div class="card">
-        <div class="card-head"><div class="card-title">3-step onboarding carousel</div><span class="badge b-ember">core</span></div>
-        <div class="card-desc">Thesis → How it works → Fee model. Animated receipt illustration that progressively flags line items as the user advances.</div>
+        <div class="card-head"><div class="card-title">3-slide intro carousel</div><span class="badge b-ember">core</span></div>
+        <div class="card-desc">Three quick slides when you first open the app. Each one builds on the last.</div>
+        <div class="ex"><strong>Slide 1</strong> — "Most medical bills have errors" with a plain receipt. <strong>Slide 2</strong> — "We flag. You verify" and the receipt now has red tags next to problem lines. <strong>Slide 3</strong> — "Free unless we save you money" and the receipt shows a <span class="money">−$5,786.00</span> recovery bar at the bottom.</div>
       </div>
       <div class="card">
-        <div class="card-head"><div class="card-title">Pricing page with billing toggle</div><span class="badge b-ember">core</span></div>
-        <div class="card-desc">Monthly/Annual switch (annual saves 25%). Two plans side-by-side with inline FAQ and trust strip.</div>
+        <div class="card-head"><div class="card-title">Pricing page before you sign up</div><span class="badge b-ember">core</span></div>
+        <div class="card-desc">Two plans shown side by side. Toggle at the top switches between monthly and annual billing. Annual knocks 25% off.</div>
+        <div class="ex">Proof strip reads "<span class="money">$1,247</span> average recovery across 4,812 audited bills" so you know this isn't nothing.</div>
       </div>
     </div>
   </section>
 
-  <!-- ── 02 Capture ── -->
   <section class="section" id="s2">
     <div class="sec-head">
       <span class="sec-num">02</span>
-      <h2 class="sec-title">Bill capture</h2>
+      <h2 class="sec-title">Capturing the bill</h2>
     </div>
+    <p class="sec-sub">The app accepts bills three ways so you don't have to fight the input.</p>
     <div class="grid three">
       <div class="card ember">
-        <div class="card-title">Camera with viewfinder</div>
-        <div class="card-desc">Corner guides, shutter button, flash toggle. Auto-crops to the bill rectangle.</div>
+        <div class="card-title">Camera mode</div>
+        <div class="card-desc">Point your phone at the paper bill. Four white corner brackets appear on screen, like a passport photo guide. Line the bill up inside them and tap the shutter.</div>
+        <div class="ex">Helper pill at the bottom reads <span class="card-kbd">Align your bill within the frame</span> and nudges you if it's crooked.</div>
       </div>
       <div class="card">
-        <div class="card-title">Photo library import</div>
-        <div class="card-desc">Pick an existing bill photo from the camera roll.</div>
+        <div class="card-title">Photo library</div>
+        <div class="card-desc">Already took a picture of the bill last week? Tap the gallery icon, pick it from your camera roll.</div>
       </div>
       <div class="card">
-        <div class="card-title">Multi-page PDF upload</div>
-        <div class="card-desc">Supports itemized bills and EOBs up to N pages. Helper pill: <span class="card-kbd">EOB or itemized bill · multi-page ok</span></div>
+        <div class="card-title">PDF upload</div>
+        <div class="card-desc">Most hospital bills arrive as PDFs in email. Tap the PDF icon and attach the file. Multiple pages are fine.</div>
+        <div class="ex">Works for the <strong>itemized bill</strong> (the hospital's receipt) and the <strong>EOB</strong> (the "explanation of benefits" your insurance mails you).</div>
       </div>
     </div>
   </section>
 
-  <!-- ── 03 Scan Pipeline ── -->
   <section class="section" id="s3">
     <div class="sec-head">
       <span class="sec-num">03</span>
-      <h2 class="sec-title">Scan pipeline</h2>
+      <h2 class="sec-title">How the scan works</h2>
     </div>
-    <p class="sec-sub">Processing runs on-device — no PHI leaves the phone unless the user exports a dispute letter. Six sequential stages with per-stage check animation.</p>
+    <p class="sec-sub">Once you capture the bill, the app runs six checks in order. Each one takes a second or two. A checklist shows progress so you can see what it's doing instead of staring at a spinner.</p>
     <div class="pipe">
-      <div class="pipe-step"><div class="pipe-num">STAGE 01</div><div class="pipe-label">OCR & layout parse</div></div>
-      <div class="pipe-step"><div class="pipe-num">STAGE 02</div><div class="pipe-label">CPT code validation</div></div>
-      <div class="pipe-step"><div class="pipe-num">STAGE 03</div><div class="pipe-label">Duplicate detection</div></div>
-      <div class="pipe-step"><div class="pipe-num">STAGE 04</div><div class="pipe-label">Upcode pattern match</div></div>
-      <div class="pipe-step"><div class="pipe-num">STAGE 05</div><div class="pipe-label">Network status lookup</div></div>
-      <div class="pipe-step"><div class="pipe-num">STAGE 06</div><div class="pipe-label">Dispute letter drafted</div></div>
+      <div class="pipe-step">
+        <div class="pipe-num">STAGE 01</div>
+        <div class="pipe-label">Read the text off the photo (OCR)</div>
+        <div class="pipe-desc">Turn pixels into actual characters the app can work with. "99285 ER visit $2,840" becomes real text.</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">STAGE 02</div>
+        <div class="pipe-label">Check every billing code</div>
+        <div class="pipe-desc">Every US medical charge has a 5-character code (CPT or HCPCS). The app checks each code is real and matches its description.</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">STAGE 03</div>
+        <div class="pipe-label">Look for duplicate charges</div>
+        <div class="pipe-desc">Did the same procedure get billed twice? The app spots it by comparing codes, timestamps, and amounts.</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">STAGE 04</div>
+        <div class="pipe-label">Look for upcoded charges</div>
+        <div class="pipe-desc">Did the hospital bill the pricier version of what actually happened? "High complexity ER visit" when the notes describe moderate complexity, for example.</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">STAGE 05</div>
+        <div class="pipe-label">Check who was in-network</div>
+        <div class="pipe-desc">Surgeon was in-network but the anesthesiologist wasn't? That's a surprise bill. There's a federal law against it (No Surprises Act) and the app catches it.</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">STAGE 06</div>
+        <div class="pipe-label">Draft the dispute letter</div>
+        <div class="pipe-desc">Once every error is known, the app writes the letter for you so you don't start from a blank page.</div>
+      </div>
     </div>
   </section>
 
-  <!-- ── 04 Flag Taxonomy ── -->
   <section class="section" id="s4">
     <div class="sec-head">
       <span class="sec-num">04</span>
-      <h2 class="sec-title">Flag taxonomy</h2>
+      <h2 class="sec-title">The 5 error types we catch</h2>
     </div>
-    <p class="sec-sub">Every flag carries a severity (high / medium / low), a confidence score (0–1), a plain-English justification, and a dollar-denominated recoverable amount.</p>
+    <p class="sec-sub">Every flag in the app is one of these five. Each one has a tint (ember = most serious, amber = softer), a severity (high / medium / low), and a confidence score so you know how sure we are.</p>
     <div class="tbl-wrap">
       <table>
         <thead>
           <tr>
-            <th style="width:140px">Flag</th>
+            <th style="width:150px">Error type</th>
             <th style="width:90px">Tint</th>
-            <th>Detection signal</th>
-            <th>Example</th>
+            <th>What it means in plain English</th>
+            <th style="width:260px">Real example from a demo bill</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td class="flag-name">Duplicate</td>
             <td><span class="badge b-ember">ember</span></td>
-            <td>Same CPT billed twice in the same encounter window</td>
-            <td class="mono">99285 × 2 at same timestamp</td>
+            <td>The exact same charge shows up twice on your bill. Almost always a billing mistake.</td>
+            <td>An ER visit billed at <span class="money">$2,840</span>, then the same code billed again for <span class="money">$2,840</span> a few minutes later. Second one is recoverable.</td>
           </tr>
           <tr>
             <td class="flag-name">Upcode</td>
             <td><span class="badge b-ember">ember</span></td>
-            <td>Billed complexity exceeds what chart notes support</td>
-            <td class="mono">99285 where notes support 99284</td>
+            <td>You got the basic version but the hospital billed for the fancy version. Costs more, worth fighting.</td>
+            <td>Billed as <span class="money">high complexity</span> ER visit (<span class="money">$2,840</span>) when chart notes describe moderate complexity (<span class="money">$1,420</span>). Difference is <span class="money">$710</span> recoverable.</td>
           </tr>
           <tr>
             <td class="flag-name">Out-of-network</td>
             <td><span class="badge b-ember">ember</span></td>
-            <td>OON provider at in-network facility (No Surprises Act)</td>
-            <td class="mono">Anesthesiologist OON at IN hospital</td>
+            <td>Your hospital was in-network, but one provider there wasn't. Federal law says they can't send you a surprise bill for it.</td>
+            <td>Anesthesiologist billed out-of-network at an in-network hospital for <span class="money">$2,150</span>. Protected under the No Surprises Act, fully recoverable.</td>
           </tr>
           <tr>
             <td class="flag-name">Unbundled</td>
             <td><span class="badge b-amber">amber</span></td>
-            <td>Line item billed separately from its global package</td>
-            <td class="mono">Post-op visit outside surgical global</td>
+            <td>One procedure got broken into smaller pieces, each billed separately. The pieces should've been included in the main charge.</td>
+            <td>Post-op follow-up visit billed separately for <span class="money">$320</span>. Should have been included in the surgery fee for free.</td>
           </tr>
           <tr>
             <td class="flag-name">Opaque</td>
             <td><span class="badge b-amber">amber</span></td>
-            <td>Non-itemized lump sum with no breakdown</td>
-            <td class="mono">"Supplies & misc · $684.00"</td>
+            <td>A giant lump-sum charge with no breakdown. You can't tell what you actually paid for, so it's worth asking.</td>
+            <td>"Supplies & miscellaneous" for <span class="money">$684</span> with zero detail. Asking for an itemized breakdown usually knocks 15 to 40% off.</td>
           </tr>
         </tbody>
       </table>
     </div>
   </section>
 
-  <!-- ── 05 Results ── -->
   <section class="section" id="s5">
     <div class="sec-head">
       <span class="sec-num">05</span>
-      <h2 class="sec-title">Results</h2>
+      <h2 class="sec-title">Results screen</h2>
     </div>
+    <p class="sec-sub">What you see after the scan finishes. Designed so you know in 3 seconds whether it's worth your time.</p>
     <div class="grid">
       <div class="card ember">
-        <div class="card-title">Recovery hero</div>
-        <div class="card-desc">"We think you may recover $X" + flagged-of-total line count + high-severity count.</div>
+        <div class="card-title">Big number at the top</div>
+        <div class="card-desc">A single headline: "We think you may recover $X". No scrolling, no thinking, just the answer.</div>
+        <div class="ex">For the demo ER bill: <span class="money">$5,786</span> with <span class="money">6 of 10</span> lines flagged, <span class="money">3</span> of them high severity.</div>
       </div>
       <div class="card">
         <div class="card-title">Stacked recovery bar</div>
-        <div class="card-desc">Single horizontal bar splitting the total recoverable by flag type, with a legend underneath.</div>
+        <div class="card-desc">One horizontal bar that shows which error types add up to the biggest recovery. Legend underneath labels each segment.</div>
+        <div class="ex">The demo bill's bar: duplicates <span class="money">$2,883</span>, out-of-network <span class="money">$1,890</span>, upcodes <span class="money">$710</span>, opaque <span class="money">$205</span>, unbundled <span class="money">$98</span>.</div>
       </div>
       <div class="card">
-        <div class="card-title">Three-tab line view</div>
-        <div class="card-desc">Flagged / All lines / Clean — each tab shows a count chip.</div>
+        <div class="card-title">Three tabs: Flagged / All lines / Clean</div>
+        <div class="card-desc">Default tab is Flagged since that's what matters. Each tab has a count next to it. You can always switch to see every line or just the boring ones.</div>
       </div>
       <div class="card">
         <div class="card-title">Per-line rows</div>
-        <div class="card-desc">CPT code, description, qty, billed, allowed, flag chip, severity dot, confidence.</div>
+        <div class="card-desc">One row per charge on the bill. Shows the code, what it was for, quantity, billed amount, and a red tag if there's a problem. Tap any row to dig in.</div>
       </div>
       <div class="card">
-        <div class="card-title">"Looks clean" section</div>
-        <div class="card-desc">Compact rows grouped below the flagged lines so nothing is hidden from the user.</div>
+        <div class="card-title">"Looks clean" section below</div>
+        <div class="card-desc">Charges that seem fine show up greyed out at the bottom of the list. Nothing is hidden. That openness builds trust.</div>
       </div>
       <div class="card ember">
-        <div class="card-title">Bottom CTA card</div>
-        <div class="card-desc">Dark pill with "Next step · Generate dispute letter" and an accent Draft button.</div>
+        <div class="card-title">Sticky bottom action</div>
+        <div class="card-desc">A dark pill floats at the bottom at all times reading "Next step: Generate dispute letter". One tap takes you to the letter draft.</div>
       </div>
     </div>
   </section>
 
-  <!-- ── 06 Flag detail ── -->
   <section class="section" id="s6">
     <div class="sec-head">
       <span class="sec-num">06</span>
-      <h2 class="sec-title">Flag detail</h2>
+      <h2 class="sec-title">Flag detail view</h2>
     </div>
+    <p class="sec-sub">Tap any flagged line on the results screen and you land here. Everything you need to decide "yes, include this" or "nah, skip it".</p>
     <div class="grid">
       <div class="card ember">
-        <div class="card-title">Billed vs recoverable card</div>
-        <div class="card-desc">Two-row comparison with the recoverable amount typeset in ember accent.</div>
+        <div class="card-title">Billed vs recoverable</div>
+        <div class="card-desc">Two rows showing what the hospital charged and what we think you can claw back.</div>
+        <div class="ex">Billed <span class="money">$2,840</span> · Recoverable <span class="money">−$710</span>. The recoverable number is in ember red so it pops.</div>
       </div>
       <div class="card">
         <div class="card-title">"Why we flagged it"</div>
-        <div class="card-desc">Plain-English reasoning — e.g. "Same CPT billed 18 minutes apart with no documented second draw."</div>
+        <div class="card-desc">One paragraph in normal English. No jargon, no code numbers, just the reasoning.</div>
+        <div class="ex">"Same blood draw code billed 18 minutes apart with no record of a second draw."</div>
       </div>
       <div class="card">
-        <div class="card-title">Side-by-side evidence</div>
-        <div class="card-desc">On duplicates, renders both line items adjacent with a "DUPLICATE" badge on the offending one.</div>
+        <div class="card-title">Side-by-side evidence for duplicates</div>
+        <div class="card-desc">If the flag is a duplicate, the app puts both charges next to each other in small cards with a red "DUPLICATE" badge stamped on the guilty one. You can see it with your own eyes.</div>
       </div>
       <div class="card">
-        <div class="card-title">AMA CPT reference</div>
-        <div class="card-desc">Inline dictionary snippet so the user can verify the coding convention.</div>
+        <div class="card-title">Official code reference</div>
+        <div class="card-desc">The real AMA description of the billing code, so you can verify the app isn't making stuff up.</div>
+        <div class="ex">For code 99285: "Emergency department visit for high-complexity decision-making. Typically 30+ minutes of face time."</div>
       </div>
       <div class="card safe">
         <div class="card-title">Trust footer</div>
-        <div class="card-desc">"We flag. You verify with your provider. This isn't medical advice."</div>
+        <div class="card-desc">A small stripe at the bottom that reads "We flag. You verify with your provider. This isn't medical advice." Keeps expectations honest.</div>
       </div>
       <div class="card">
-        <div class="card-title">Dismiss / Add to dispute</div>
-        <div class="card-desc">Twin CTA at the bottom, the accent button weighted heavier.</div>
+        <div class="card-title">Two action buttons</div>
+        <div class="card-desc">Bottom of the screen, two buttons. Left is <strong>Dismiss</strong> (skip this flag). Right is <strong>Add to dispute</strong> (include it in the letter). The right one is weighted heavier so it's the obvious choice.</div>
       </div>
     </div>
   </section>
 
-  <!-- ── 07 Dispute ── -->
   <section class="section" id="s7">
     <div class="sec-head">
       <span class="sec-num">07</span>
-      <h2 class="sec-title">Dispute letter composer</h2>
+      <h2 class="sec-title">Dispute letter</h2>
     </div>
-    <p class="sec-sub">The central value surface. Users choose which flagged claims go into the letter, edit any text inline, pick a delivery channel, and preview the final PDF before sending.</p>
+    <p class="sec-sub">The core value surface. The app has already drafted the letter, you just tune it and send.</p>
     <div class="grid">
       <div class="card ember">
-        <div class="card-title">Per-claim toggle list</div>
-        <div class="card-desc">Checkbox + flag label + code + recoverable amount. Running "Disputing · $X" footer updates live.</div>
+        <div class="card-title">Check off the claims you want to dispute</div>
+        <div class="card-desc">A checklist at the top of every flagged charge with a checkbox next to it. Uncheck anything you don't want to fight over. The "Disputing $X" total at the bottom updates live.</div>
+        <div class="ex">You might uncheck the <span class="money">$98</span> unbundled charge because it's not worth the hassle, but keep the <span class="money">$2,840</span> duplicate and the <span class="money">$2,150</span> surprise bill.</div>
       </div>
       <div class="card">
-        <div class="card-title">Inline-editable letter</div>
-        <div class="card-desc">Signer, recipient, department, and closing paragraph are tap-to-edit. Dotted underline signals editability.</div>
+        <div class="card-title">Every piece of text is tap-to-edit</div>
+        <div class="card-desc">Dotted underlines tell you what's editable. Tap the signer, the recipient, the department, or the closing paragraph and you can rewrite it.</div>
+        <div class="ex">Change the signer from "Jordan M. Reyes" to your actual name. Soften the closing paragraph if you want to sound less combative.</div>
       </div>
       <div class="card">
-        <div class="card-title">Auto-generated legal citations</div>
-        <div class="card-desc">References the No Surprises Act (45 CFR § 149) automatically when relevant flags are present.</div>
+        <div class="card-title">Legal citations added automatically</div>
+        <div class="card-desc">When your bill has a surprise out-of-network charge, the letter automatically cites the No Surprises Act (45 CFR § 149). You don't have to know the law exists.</div>
       </div>
       <div class="card">
-        <div class="card-title">Per-claim § blocks</div>
-        <div class="card-desc">§1, §2, §3… each showing flag label, description, code, reasoning, and recoverable amount.</div>
+        <div class="card-title">Per-claim paragraphs</div>
+        <div class="card-desc">The body of the letter lists each disputed charge as §1, §2, §3, and so on. Each one has the flag name, what it's for, the code, the reason, and the dollar amount.</div>
       </div>
       <div class="card ember">
-        <div class="card-title">Delivery method selector</div>
-        <div class="card-desc">Certified mail ($7.82, recommended · postmarked receipt) · Hospital patient portal (free PDF) · Email (billing dept).</div>
+        <div class="card-title">Pick how to send it</div>
+        <div class="card-desc">Three delivery options, each with trade-offs.</div>
+        <div class="ex"><strong>Certified mail</strong> costs <span class="money">$7.82</span>, comes with a postmark receipt, and is the recommended option because the hospital can't pretend they didn't get it. <strong>Patient portal</strong> uploads the letter as a PDF and costs nothing. <strong>Email</strong> goes straight to the billing department inbox.</div>
       </div>
       <div class="card">
-        <div class="card-title">PDF preview overlay</div>
-        <div class="card-desc">Renders the finalized letter on serif paper with the shot·pact prepared-by footer.</div>
+        <div class="card-title">PDF preview</div>
+        <div class="card-desc">Tap Preview to see exactly what the hospital will receive. Looks like a real legal letter on cream paper, with the shot·pact footer marking who prepared it.</div>
       </div>
     </div>
   </section>
 
-  <!-- ── 08 Sent ── -->
   <section class="section" id="s8">
     <div class="sec-head">
       <span class="sec-num">08</span>
-      <h2 class="sec-title">Sent & tracking</h2>
+      <h2 class="sec-title">After you hit send</h2>
     </div>
-    <div class="grid">
+    <p class="sec-sub">Disputes take weeks. These screens keep you calm while you wait.</p>
+    <div class="grid three">
       <div class="card safe">
-        <div class="card-title">Send confirmation</div>
-        <div class="card-desc">Claim count, tracking ID (<span class="card-kbd">SP-XXXXXX</span>), delivery method, in-dispute dollar total.</div>
+        <div class="card-title">Confirmation screen</div>
+        <div class="card-desc">A big checkmark with the count of claims, a tracking number, and the dollar total in dispute.</div>
+        <div class="ex">"5 claims underway. Tracking <span class="card-kbd">SP-8H2K9</span>. In dispute: <span class="money">$5,786</span>."</div>
       </div>
       <div class="card">
-        <div class="card-title">Response window</div>
-        <div class="card-desc">"Providers typically respond in 14–30 days." Sets expectations immediately.</div>
+        <div class="card-title">Sets expectations</div>
+        <div class="card-desc">One line that says how long this usually takes.</div>
+        <div class="ex">"Providers typically respond in 14 to 30 days."</div>
       </div>
       <div class="card">
         <div class="card-title">Day-14 auto-nudge</div>
-        <div class="card-desc">If the provider goes silent, shot-pact follows up on the user's behalf.</div>
+        <div class="card-desc">If the hospital hasn't written back in 2 weeks, the app pings them on your behalf so you don't have to remember to chase them.</div>
       </div>
     </div>
   </section>
 
-  <!-- ── 09 Savings ── -->
   <section class="section" id="s9">
     <div class="sec-head">
       <span class="sec-num">09</span>
       <h2 class="sec-title">Savings estimator</h2>
     </div>
-    <p class="sec-sub">Transparent, line-by-line math — users can see exactly how the take-home number is derived and the contingency fee is deducted.</p>
+    <p class="sec-sub">Before you commit to sending the letter, the app shows you what actually ends up in your pocket. No hidden math.</p>
     <div class="grid">
       <div class="card ember">
-        <div class="card-title">Take-home hero</div>
-        <div class="card-desc">"After our cut, you keep $X" set in display serif, accented in ember.</div>
+        <div class="card-title">Take-home hero number</div>
+        <div class="card-desc">"After our cut, you keep $X." One number, in big display type, in ember red.</div>
+        <div class="ex">Flagged <span class="money">$5,786</span>, times 78% expected success, minus our 20% fee, gives you about <span class="money">$3,612</span> take-home.</div>
       </div>
       <div class="card">
-        <div class="card-title">Explicit math breakdown</div>
-        <div class="card-desc">Gross recoverable · × 78% expected success · − fee · = you keep. Each row on its own line.</div>
+        <div class="card-title">The math, line by line</div>
+        <div class="card-desc">Every row of the calculation is shown. Nothing is hidden. You can see exactly how the final number was built.</div>
+        <div class="ex"><strong>Flagged & recoverable</strong> <span class="money">$5,786</span> · <strong>× 78% expected success</strong> <span class="money">$4,513</span> · <strong>Our 20% fee</strong> <span class="money">−$903</span> · <strong>You keep</strong> <span class="money">$3,610</span>.</div>
       </div>
       <div class="card">
-        <div class="card-title">Fee mode toggle</div>
-        <div class="card-desc">20% contingency fee (success-based only) or flat $49 per bill (not contingent).</div>
+        <div class="card-title">Pick your fee mode</div>
+        <div class="card-desc">You can choose to pay 20% of what we actually recover, OR a flat $49 per bill.</div>
+        <div class="ex">Flat <span class="money">$49</span> is better if you expect a big refund. The 20% contingency is better if you're not sure it'll work since you pay nothing if we get nothing.</div>
       </div>
       <div class="card">
-        <div class="card-title">Population disclaimer</div>
-        <div class="card-desc">"Based on 12,400+ comparable ER disputes audited across 2024–2026."</div>
+        <div class="card-title">Honest fine print</div>
+        <div class="card-desc">One line at the bottom showing where the success rate comes from.</div>
+        <div class="ex">"Based on 12,400+ comparable ER disputes audited across 2024 to 2026."</div>
       </div>
     </div>
   </section>
 
-  <!-- ── 10 Dashboard ── -->
   <section class="section" id="s10">
     <div class="sec-head">
       <span class="sec-num">10</span>
       <h2 class="sec-title">Dashboard</h2>
     </div>
+    <p class="sec-sub">The home screen for returning users. Shows whatever dispute is currently in flight, your running total, and every bill you've ever scanned.</p>
     <div class="grid">
       <div class="card ember">
-        <div class="card-title">Current dispute hero</div>
-        <div class="card-desc">Facility, department, date of service, disputing total, and a 5-step status timeline (Sent → Received → Under review → Responded → Resolved).</div>
+        <div class="card-title">Current dispute card</div>
+        <div class="card-desc">The top of the dashboard is dedicated to the bill you're actively fighting. Shows the hospital, the department, the date of service, the dollar amount in dispute, and a 5-dot progress bar (Sent → Received → Under review → Responded → Resolved).</div>
+        <div class="ex">"Memorial General · ER visit · Mar 14, 2026 · Disputing <span class="money">$5,786</span>." The second dot is lit, meaning the hospital mailroom has logged receipt.</div>
       </div>
       <div class="card">
-        <div class="card-title">ETA countdown</div>
-        <div class="card-desc">"~N days left to respond. We'll nudge them on day 14." Clock icon, compact row.</div>
+        <div class="card-title">ETA row</div>
+        <div class="card-desc">One row with a clock icon. Tells you how many days the hospital has left to respond and when we'll nudge them.</div>
+        <div class="ex">"About 11 days left to respond. We'll nudge them on day 14."</div>
       </div>
       <div class="card">
         <div class="card-title">Lifetime recovered</div>
-        <div class="card-desc">Big accent number + % of total billed, with a secondary line like "Roughly two months of groceries."</div>
+        <div class="card-desc">A running total of how much money this app has saved you. With a little line underneath that relates it to something human.</div>
+        <div class="ex">"<span class="money">$6,184</span> recovered, 22% of what you were billed. Roughly two months of groceries."</div>
       </div>
       <div class="card">
         <div class="card-title">Quick actions</div>
-        <div class="card-desc">Three-up grid: Scan new (primary) · Tax summary · Support.</div>
+        <div class="card-desc">A row of three tiles. Scan a new bill (primary, dark background). Download tax summary. Get support.</div>
       </div>
       <div class="card">
-        <div class="card-title">All bills list</div>
-        <div class="card-desc">Card per bill — facility, dept, date, billed, and either "Disputing" (ember) or "Recovered" (safe green) badge + amount.</div>
+        <div class="card-title">Your full bill history</div>
+        <div class="card-desc">Every bill you've ever scanned, one card each. Green badge if you've recovered money, ember badge if it's still in dispute.</div>
+        <div class="ex">"Sutter Urgent Care · Strep test · Recovered <span class="money">+$318</span>" vs "Memorial General · ER visit · In dispute <span class="money">$5,786</span>".</div>
       </div>
       <div class="card">
         <div class="card-title">Activity feed</div>
-        <div class="card-desc">Icon-led rows: sent, filed, received, recovered. Relative timestamp on the right.</div>
+        <div class="card-desc">A timeline of what happened and when. Little icon on the left, relative timestamp on the right.</div>
+        <div class="ex">"3 days ago · Certified letter sent #SP-8H2K9" · "2 days ago · Provider mailroom logged receipt" · "Dec 19 · Refund posted <span class="money">+$318</span>".</div>
       </div>
     </div>
   </section>
 
-  <!-- ── 11 Pricing ── -->
   <section class="section" id="s11">
     <div class="sec-head">
       <span class="sec-num">11</span>
       <h2 class="sec-title">Pricing</h2>
     </div>
-    <p class="sec-sub">Most users stay on contingency. Pro is for frequent filers who don't want to share a cut.</p>
+    <p class="sec-sub">Two plans. Most people start on contingency and stay there. Pro is for people who expect to dispute a lot of bills.</p>
     <div class="plans">
       <div class="plan primary">
         <div class="plan-tag">Most choose this</div>
@@ -638,10 +694,13 @@ td.mono { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
         <div class="plan-sub">Free to start. Nothing upfront.</div>
         <ul class="plan-feats">
           <li>Unlimited bill audits</li>
-          <li>Dispute letters drafted & sent</li>
-          <li>Provider follow-up & nudges</li>
-          <li class="strong">No savings, no fee</li>
+          <li>Dispute letters drafted and sent</li>
+          <li>Provider follow-up and day-14 nudges</li>
+          <li class="strong">No savings means no fee</li>
         </ul>
+        <div class="plan-best">
+          <strong>Best for:</strong> someone with one or two scary bills who wants to try this with zero risk.
+        </div>
       </div>
       <div class="plan">
         <div class="plan-tag">For frequent filers</div>
@@ -653,56 +712,59 @@ td.mono { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
           <li>Everything in Pay-if-we-win</li>
           <li class="strong">No contingency fee, ever</li>
           <li>Tax-ready HSA export</li>
-          <li>Priority human review (&lt;24h)</li>
-          <li>Family — up to 4 members</li>
+          <li>Priority human review under 24h</li>
+          <li>Family plan up to 4 members</li>
         </ul>
+        <div class="plan-best">
+          <strong>Best for:</strong> a family that deals with multiple medical bills a year, or someone with chronic conditions who'd rather not share a cut every time.
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ── 12 Platform ── -->
   <section class="section" id="s12">
     <div class="sec-head">
       <span class="sec-num">12</span>
-      <h2 class="sec-title">Platform & trust</h2>
+      <h2 class="sec-title">Privacy & trust</h2>
     </div>
+    <p class="sec-sub">Medical bills contain sensitive info. These decisions are meant to make people trust the app enough to upload one.</p>
     <div class="grid three">
       <div class="card safe">
-        <div class="card-title">On-device OCR</div>
-        <div class="card-desc">PHI never leaves the phone unless the user exports a dispute letter.</div>
+        <div class="card-title">Scanning happens on your phone</div>
+        <div class="card-desc">Your bill photo never goes to our servers. The OCR and pattern matching runs on-device, so your medical info stays with you.</div>
+        <div class="ex">The only time data leaves your phone is if YOU export a dispute letter to send.</div>
       </div>
       <div class="card safe">
         <div class="card-title">HIPAA-aligned processing</div>
-        <div class="card-desc">Storage, encryption, and export paths designed to meet HIPAA patient-controlled data norms.</div>
+        <div class="card-desc">Built to the same privacy standards hospitals follow for your health records. Storage, encryption, and data handling all follow HIPAA norms.</div>
       </div>
       <div class="card safe">
-        <div class="card-title">Human review on every dispute</div>
-        <div class="card-desc">A human always makes the final call before a letter is sent.</div>
+        <div class="card-title">A human reviews every letter</div>
+        <div class="card-desc">Before any dispute letter goes out, a real person on our team looks it over. That keeps us from embarrassing you with a silly mistake.</div>
       </div>
       <div class="card">
-        <div class="card-title">iOS 26 "Liquid Glass"</div>
-        <div class="card-desc">Native iOS device frame, status bar, nav bar, glass-pill components.</div>
+        <div class="card-title">Native iOS feel</div>
+        <div class="card-desc">Uses the iOS 26 "Liquid Glass" look, so the app feels like part of your phone rather than a website dressed up as an app.</div>
       </div>
       <div class="card">
-        <div class="card-title">Android Material</div>
-        <div class="card-desc">Material status bar, app bar, list items, nav bar.</div>
+        <div class="card-title">Native Android feel</div>
+        <div class="card-desc">Uses Material Design components, so it feels right at home next to Gmail and Google Calendar.</div>
       </div>
       <div class="card">
         <div class="card-title">Not medical or legal advice</div>
-        <div class="card-desc">Positioned as paperwork assistance — "We flag. You verify."</div>
+        <div class="card-desc">This is important and it's in the app everywhere. shot-pact helps you with paperwork. We're not doctors and we're not lawyers. "We flag. You verify."</div>
       </div>
     </div>
   </section>
 
-  <!-- ── 13 Data Model ── -->
   <section class="section" id="s13">
     <div class="sec-head">
       <span class="sec-num">13</span>
       <h2 class="sec-title">Data model</h2>
     </div>
-    <p class="sec-sub">Shape backed by the prototype fixtures — ER and outpatient surgery bills, plus a dashboard of past disputes.</p>
+    <p class="sec-sub">The shape of the data backing the prototype. If you're a dev, this is what the API would return. If you're not, skip this section.</p>
     <pre class="schema">
-<span class="c">// Bill</span>
+<span class="c">// A Bill — one hospital statement</span>
 {
   <span class="k">id</span>:                    <span class="s">'B-2026-03'</span>,
   <span class="k">patient</span>:               <span class="s">'Jordan M. Reyes'</span>,
@@ -718,7 +780,7 @@ td.mono { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
   <span class="k">lines</span>: [ <span class="c">/* Line[] */</span> ],
 }
 
-<span class="c">// Line</span>
+<span class="c">// A Line — one charge on the bill</span>
 {
   <span class="k">id</span>:          <span class="s">'L1'</span>,
   <span class="k">code</span>:        <span class="s">'99285'</span>,
@@ -732,24 +794,23 @@ td.mono { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
   <span class="k">confidence</span>:  0.86,
   <span class="k">note</span>:        <span class="s">'Chart notes describe moderate complexity…'</span>,
   <span class="k">recoverable</span>: 710.00,
-  <span class="k">dupOf</span>:       <span class="s">'L3'</span> <span class="c">// only on duplicates</span>,
+  <span class="k">dupOf</span>:       <span class="s">'L3'</span> <span class="c">// only present on duplicates</span>,
 }
 
-<span class="c">// Dashboard bill (historical)</span>
+<span class="c">// A Dashboard Bill — a past or in-flight dispute</span>
 {
   <span class="k">id</span>, <span class="k">facility</span>, <span class="k">department</span>, <span class="k">dateOfService</span>, <span class="k">billed</span>,
   <span class="k">state</span>:         <span class="s">'in-flight' | 'resolved' | 'archived'</span>,
   <span class="k">disputing</span>, <span class="k">recovered</span>,
-  <span class="k">timelineStep</span>: 0–4, <span class="c">// Sent → Received → Review → Responded → Resolved</span>
+  <span class="k">timelineStep</span>: 0 to 4, <span class="c">// Sent, Received, Review, Responded, Resolved</span>
   <span class="k">sentOn</span>, <span class="k">resolvedOn</span>, <span class="k">nextEtaDays</span>,
   <span class="k">activity</span>: [{ <span class="k">when</span>, <span class="k">label</span>, <span class="k">kind</span> }],
 }
 </pre>
   </section>
 
-  <!-- ── Footer ── -->
   <footer class="foot">
-    <div>shot·pact · research · feature list · v1</div>
+    <div>shot·pact · research · feature list · v2</div>
     <div>
       <a href="../live-flow/">interactive prototype</a> ·
       <a href="https://github.com/shot-pact/research">source</a>
