@@ -1,0 +1,6 @@
+{
+  "name": "SHOT-PACT",
+  "description": "A human-centric medical billing audit platform that uses AI to identify discrepancies and restore financial health through quiet, authoritative design.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["AI-driven auditing", "Medical billing analysis", "Dispute letter generation"]
+}

@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Newsreader", ui-serif, Georgia, serif;
+
+  /* Humanistic Audit Color Palette */
+  --color-surface: #fff8f3;
+  --color-surface-dim: #e1d8d0;
+  --color-surface-bright: #fff8f3;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #fcf2ea;
+  --color-surface-container: #f6ece4;
+  --color-surface-container-high: #f0e7de;
+  --color-surface-container-highest: #eae1d9;
+  
+  --color-on-surface: #1f1b16;
+  --color-on-surface-variant: #4d4540;
+  
+  --color-outline: #7e756f;
+  --color-outline-variant: #cfc4bd;
+  
+  --color-primary: #181512;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #2d2926;
+  --color-on-primary-container: #96908b;
+  
+  --color-secondary: #99462a;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #fe9572;
+  --color-on-secondary-container: #762c12;
+
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+}
+
+@layer base {
+  html, body, #root {
+    min-height: 100vh;
+  }
+
+  body {
+    @apply bg-surface-container-highest text-on-surface font-sans antialiased flex items-center justify-center px-4 py-6;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+  
+  h1, h2, h3, h4, .font-serif {
+    @apply font-serif tracking-tight;
+  }
+}
+
+#root {
+  width: 100%;
+  max-width: 440px;
+}
+
+
+.paper-card {
+  @apply bg-white rounded-xl border border-outline-variant/30 shadow-[0_10px_30px_-15px_rgba(45,41,38,0.05)] transition-all duration-300;
+}
+
+.paper-card:hover {
+  @apply shadow-[0_20px_40px_-15px_rgba(45,41,38,0.1)];
+}
+
+.tap-highlight-transparent {
+  -webkit-tap-highlight-color: transparent;
+}
